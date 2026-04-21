@@ -1,741 +1,2282 @@
 <!DOCTYPE html>
 <html lang="kk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>BARYS · Спорттық қауымдастық</title>
-  <!-- Шрифты: энергичный гротеск + стильный сериф -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Playfair+Display:wght@400;600;700;900&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root {
-      --gold: #F5B41A;
-      --gold-light: #FFD966;
-      --gold-dark: #C58C0A;
-      --navy: #0B132B;
-      --navy2: #1C2541;
-      --blue-accent: #3A506B;
-      --red-accent: #D62828;
-      --white: #FFFFFF;
-      --text: #EAEAEA;
-      --text2: #A0AABF;
-      --border: rgba(245, 180, 26, 0.25);
-      --border2: rgba(255, 255, 255, 0.1);
-      --success: #2DC653;
-      --danger: #E63946;
-      --card: #111B2E;
-      --card2: #1A2A42;
-      --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>BARYS — Лидерлер қауымдастығы</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ══════════════════════════════════
+   ROOT VARIABLES
+══════════════════════════════════ */
+:root {
+  --bg:       #05080F;
+  --bg2:      #080D1A;
+  --card:     #0C1224;
+  --card2:    #111828;
+  --gold:     #D4A843;
+  --gold2:    #F0C750;
+  --gold-dim: #8B6A1F;
+  --blue:     #0A5CF0;
+  --blue2:    #3A7FFF;
+  --blue-glow:rgba(10,92,240,.18);
+  --white:    #FAFBFF;
+  --text:     #B8BFD0;
+  --text2:    #606880;
+  --border:   rgba(212,168,67,.14);
+  --border2:  rgba(255,255,255,.06);
+  --success:  #22C55E;
+  --danger:   #EF4444;
+  --radius:   14px;
+  --nav-h:    66px;
+}
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--navy);
-      color: var(--text);
-      font-family: 'Montserrat', sans-serif;
-      line-height: 1.6;
-      min-height: 100vh;
-      font-size: 16px;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-    /* Спортивный фон с диагональными линиями */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background: repeating-linear-gradient(45deg, rgba(245,180,26,0.02) 0px, rgba(245,180,26,0.02) 2px, transparent 2px, transparent 8px);
-      pointer-events: none; z-index: 0;
-    }
-    /* Скроллбар */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--navy); }
-    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 6px; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
 
-    /* Навигация */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-      background: rgba(11, 19, 43, 0.9);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem; height: 72px;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: all 0.3s;
-    }
-    nav.scrolled { background: rgba(8, 16, 35, 0.98); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
-    .nav-logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
-    .logo-mark {
-      width: 44px; height: 44px; background: linear-gradient(145deg, var(--gold), var(--gold-dark));
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 12px rgba(245,180,26,0.3);
-    }
-    .logo-mark img { width: 44px; height: 44px; border-radius: 12px; object-fit: cover; }
-    .logo-text {
-      font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900;
-      color: var(--gold); letter-spacing: 2px; line-height: 1;
-    }
-    .logo-tagline { font-size: 0.6rem; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; }
-    .nav-center { display: flex; gap: 2.5rem; list-style: none; }
-    .nav-center a {
-      color: var(--text2); text-decoration: none; font-size: 0.8rem; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s;
-      position: relative;
-    }
-    .nav-center a::after {
-      content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 3px;
-      background: var(--gold); transition: width 0.3s; border-radius: 3px;
-    }
-    .nav-center a:hover { color: var(--white); }
-    .nav-center a:hover::after { width: 100%; }
+body {
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Nunito',sans-serif;
+  overflow-x:hidden;
+  line-height:1.6;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
 
-    /* Языковой переключатель */
-    .lang-wrap { position: relative; }
-    .lang-trigger {
-      display: flex; align-items: center; gap: 8px; background: rgba(245,180,26,0.1);
-      border: 1px solid var(--border); color: var(--gold); padding: 8px 14px;
-      border-radius: 30px; cursor: pointer; font-weight: 700; font-size: 0.8rem;
-      transition: all 0.2s;
-    }
-    .lang-trigger:hover { background: rgba(245,180,26,0.2); }
-    .flag-icon { width: 22px; height: 15px; border-radius: 3px; overflow: hidden; }
-    .lang-dropdown {
-      position: absolute; top: calc(100% + 12px); right: 0; background: var(--card2);
-      border: 1px solid var(--border); border-radius: 16px; min-width: 180px;
-      display: none; flex-direction: column; z-index: 2000; box-shadow: var(--shadow);
-    }
-    .lang-dropdown.open { display: flex; }
-    .lang-option {
-      display: flex; align-items: center; gap: 12px; padding: 12px 16px;
-      background: none; border: none; color: var(--text2); cursor: pointer;
-      font-size: 0.9rem; font-weight: 500; text-align: left; transition: 0.2s;
-    }
-    .lang-option:hover { background: rgba(245,180,26,0.1); color: var(--white); }
-    .lang-option.active { color: var(--gold); font-weight: 700; background: rgba(245,180,26,0.05); }
+/* ── Noise overlay ── */
+body::after {
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:.022;pointer-events:none;z-index:9997;
+}
 
-    /* Гамбургер */
-    .hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; }
-    .hamburger span { width: 26px; height: 2.5px; background: var(--gold); transition: 0.3s; border-radius: 2px; }
-    .mobile-nav {
-      position: fixed; top: 72px; left: 0; right: 0; background: rgba(11,19,43,0.98);
-      backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
-      max-height: 0; overflow: hidden; transition: max-height 0.4s; z-index: 999;
-    }
-    .mobile-nav.open { max-height: 400px; }
-    .mobile-nav a {
-      display: block; padding: 1rem 1.5rem; color: var(--text2); text-decoration: none;
-      font-weight: 700; text-transform: uppercase; border-bottom: 1px solid var(--border2);
-    }
-    .mobile-lang { padding: 1rem 1.5rem; display: flex; gap: 10px; flex-wrap: wrap; }
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:4px;}
 
-    /* Hero с баннером */
-    .hero {
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 6rem 1.5rem 4rem; position: relative;
-      margin-top: 72px; isolation: isolate;
-    }
-    .hero-bg {
-      position: absolute; inset: 0; z-index: -1;
-      background: radial-gradient(circle at 30% 40%, rgba(58,80,107,0.4) 0%, transparent 60%),
-                  url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M30 5 L35 15 L45 10 L40 20 L50 25 L40 30 L45 40 L35 35 L30 45 L25 35 L15 40 L20 30 L10 25 L20 20 L15 10 L25 15 L30 5Z" fill="rgba(245,180,26,0.08)" /%3E%3C/svg%3E');
-      background-size: 80px 80px, auto;
-    }
-    .hero-content { max-width: 900px; position: relative; z-index: 2; }
-    .hero-badge {
-      display: inline-block; background: rgba(214,40,40,0.2); border: 1px solid var(--red-accent);
-      color: var(--white); padding: 0.5rem 1.8rem; border-radius: 40px;
-      font-size: 0.9rem; font-weight: 700; letter-spacing: 3px; margin-bottom: 2rem;
-      backdrop-filter: blur(4px);
-    }
-    .hero-title {
-      font-family: 'Playfair Display', serif; font-size: clamp(3.5rem, 12vw, 7rem);
-      font-weight: 900; color: var(--white); line-height: 1; margin-bottom: 1rem;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-    .hero-title em { color: var(--gold); font-style: italic; }
-    .hero-sub {
-      font-size: 1.2rem; letter-spacing: 6px; text-transform: uppercase; color: var(--gold-light);
-      margin-bottom: 2rem; font-weight: 600;
-    }
-    .hero-desc {
-      font-size: 1.2rem; color: var(--text2); max-width: 600px; margin: 0 auto 2.5rem;
-    }
-    .btn-gold {
-      display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(145deg, var(--gold), var(--gold-dark));
-      color: var(--navy); padding: 1rem 2.5rem; font-size: 0.9rem; font-weight: 800;
-      letter-spacing: 1px; text-transform: uppercase; border: none; border-radius: 50px;
-      cursor: pointer; text-decoration: none; box-shadow: 0 8px 20px rgba(245,180,26,0.3);
-      transition: all 0.3s;
-    }
-    .btn-gold:hover { transform: translateY(-4px); box-shadow: 0 16px 30px rgba(245,180,26,0.4); }
-    .btn-outline {
-      display: inline-flex; align-items: center; gap: 10px; background: transparent;
-      border: 2px solid var(--gold); color: var(--gold); padding: 1rem 2.5rem;
-      font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      border-radius: 50px; cursor: pointer; text-decoration: none; transition: 0.3s;
-    }
-    .btn-outline:hover { background: rgba(245,180,26,0.1); transform: translateY(-4px); }
+/* ══════════════════════════════════
+   TOP TICKER BANNER
+══════════════════════════════════ */
+#ticker {
+  background:linear-gradient(90deg,var(--blue) 0%,#0840B8 50%,var(--blue) 100%);
+  height:36px;overflow:hidden;display:flex;align-items:center;
+  position:fixed;top:0;left:0;right:0;z-index:1001;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
 
-    /* Общие секции */
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 1.5rem; }
-    section { padding: 6rem 1.5rem; position: relative; }
-    .section-tag {
-      font-size: 0.8rem; letter-spacing: 4px; color: var(--gold); text-transform: uppercase;
-      font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;
-    }
-    .section-tag::before { content: ''; width: 40px; height: 2px; background: var(--gold); }
-    .section-title {
-      font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.8rem);
-      color: var(--white); font-weight: 900; line-height: 1.2; margin-bottom: 1.5rem;
-    }
+.ticker-inner {
+  display:flex;align-items:center;gap:0;
+  white-space:nowrap;
+  animation:ticker-scroll 28s linear infinite;
+  will-change:transform;
+}
 
-    /* Статистика */
-    .stats-grid {
-      display: grid; grid-template-columns: repeat(4,1fr); gap: 1px;
-      background: var(--border); border-radius: 24px; overflow: hidden;
-    }
-    .stat-item {
-      background: var(--card); padding: 2.5rem 1.5rem; text-align: center;
-      transition: 0.3s;
-    }
-    .stat-item:hover { background: var(--card2); }
-    .stat-num { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: var(--gold); font-weight: 900; }
-    .stat-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text2); }
+.ticker-inner:hover{animation-play-state:paused;}
 
-    /* Основатель */
-    .founder-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 3rem; align-items: center; }
-    .founder-frame {
-      aspect-ratio: 3/4; border-radius: 24px; overflow: hidden; border: 2px solid var(--gold);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    }
-    .founder-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .founder-info h3 { font-size: 2.5rem; color: var(--white); }
-    .founder-role { color: var(--gold); font-weight: 700; margin-bottom: 1.5rem; }
+.ticker-item {
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:0 2.5rem;
+  font-family:'Rajdhani',sans-serif;
+  font-size:.82rem;font-weight:600;
+  color:rgba(255,255,255,.9);
+  letter-spacing:.5px;
+}
 
-    /* Лидеры */
-    .leaders-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(180px,1fr)); gap: 1.5rem;
-    }
-    .leader-card {
-      background: var(--card); border-radius: 20px; padding: 2rem 1rem; text-align: center;
-      border: 1px solid var(--border2); transition: 0.3s; cursor: pointer;
-    }
-    .leader-card:hover { transform: translateY(-8px); border-color: var(--gold); box-shadow: var(--shadow); }
-    .leader-av {
-      width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--gold);
-      margin: 0 auto 1rem; overflow: hidden; background: var(--navy2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; font-weight: 700; color: var(--gold);
-    }
-    .leader-av img { width: 100%; height: 100%; object-fit: cover; }
-    .leader-nm { font-weight: 800; color: var(--white); }
-    .leader-city { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; }
+.ticker-sep{color:rgba(255,255,255,.3);font-size:1.1rem;}
 
-    /* Форма */
-    .join-wrapper {
-      background: var(--card); border-radius: 32px; padding: 3rem;
-      border: 1px solid var(--border); max-width: 600px; margin: 0 auto;
-    }
-    .form-input {
-      width: 100%; padding: 1rem 1.2rem; background: var(--navy2);
-      border: 1px solid var(--border2); border-radius: 16px; color: var(--white);
-      font-size: 1rem; margin-bottom: 1rem;
-    }
+.ticker-item .dot {
+  width:6px;height:6px;
+  background:var(--gold2);border-radius:50%;flex-shrink:0;
+  box-shadow:0 0 6px var(--gold);
+}
 
-    /* Админ панель */
-    #adm {
-      position: fixed; inset: 0; background: var(--navy); z-index: 9999;
-      display: none; flex-direction: column;
-    }
-    #adm.on { display: flex; }
-    .adm-topbar {
-      height: 60px; background: var(--card); border-bottom: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem;
-    }
-    .adm-layout { display: flex; flex: 1; overflow: hidden; }
-    .adm-sidebar {
-      width: 240px; background: var(--card); border-right: 1px solid var(--border);
-      padding: 1.5rem 1rem; overflow-y: auto;
-    }
-    .adm-nav-item {
-      display: flex; align-items: center; gap: 10px; padding: 0.8rem 1rem;
-      border-radius: 12px; color: var(--text2); font-weight: 600; cursor: pointer;
-      transition: 0.2s; margin-bottom: 5px;
-    }
-    .adm-nav-item.active { background: rgba(245,180,26,0.15); color: var(--gold); }
-    .adm-main { flex: 1; padding: 2rem; overflow-y: auto; }
-    .adm-panel { display: none; }
-    .adm-panel.active { display: block; }
-    .adm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1.5rem; }
-    .adm-field { display: flex; flex-direction: column; gap: 0.3rem; }
-    .adm-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); }
-    .adm-input {
-      padding: 0.8rem 1rem; background: var(--navy2); border: 1px solid var(--border2);
-      border-radius: 12px; color: var(--white); font-size: 0.9rem;
-    }
-    .adm-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    .adm-table th, .adm-table td { padding: 1rem; border-bottom: 1px solid var(--border2); text-align: left; }
-    .adm-btn-sm { padding: 0.4rem 1rem; border-radius: 20px; border: none; font-weight: 700; cursor: pointer; }
-    .adm-edit { background: rgba(58,80,107,0.5); color: white; }
-    .adm-del { background: rgba(230,57,70,0.3); color: var(--danger); }
+@keyframes ticker-scroll{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
 
-    /* Адаптив */
-    @media (max-width: 768px) {
-      nav { padding: 0 1rem; }
-      .nav-center { display: none; }
-      .hamburger { display: flex; }
-      .stats-grid { grid-template-columns: repeat(2,1fr); }
-      .founder-grid { grid-template-columns: 1fr; }
-      .adm-layout { flex-direction: column; }
-      .adm-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); overflow-x: auto; display: flex; gap: 5px; }
-      .adm-nav-item { white-space: nowrap; }
-      .adm-main { padding: 1rem; }
-    }
-  </style>
+/* ══════════════════════════════════
+   NAV
+══════════════════════════════════ */
+nav {
+  position:fixed;top:36px;left:0;right:0;z-index:1000;
+  height:var(--nav-h);
+  background:rgba(5,8,15,.88);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:0 2rem;
+  transition:background .3s,box-shadow .3s;
+}
+
+nav.scrolled {
+  background:rgba(5,8,15,.97);
+  box-shadow:0 4px 40px rgba(0,0,0,.5);
+}
+
+.nav-logo {
+  display:flex;align-items:center;gap:.8rem;
+  text-decoration:none;flex-shrink:0;
+}
+
+.logo-icon {
+  width:42px;height:42px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dim));
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  box-shadow:0 4px 18px rgba(212,168,67,.28);
+  flex-shrink:0;
+}
+
+.logo-icon img{width:100%;height:100%;object-fit:cover;border-radius:10px;}
+.logo-icon-fallback{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.5rem;color:var(--bg);letter-spacing:1px;
+}
+
+.logo-words {}
+.logo-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.55rem;color:var(--gold);letter-spacing:4px;
+  line-height:1;display:block;
+}
+.logo-sub {
+  font-size:.5rem;color:var(--text2);
+  letter-spacing:2.5px;text-transform:uppercase;
+  font-weight:700;display:block;margin-top:1px;
+}
+
+.nav-links {
+  display:flex;gap:2.5rem;list-style:none;
+}
+
+.nav-links a {
+  color:var(--text2);text-decoration:none;
+  font-family:'Rajdhani',sans-serif;
+  font-size:.82rem;font-weight:600;
+  letter-spacing:1.5px;text-transform:uppercase;
+  transition:color .25s;position:relative;
+}
+
+.nav-links a::after {
+  content:'';position:absolute;
+  bottom:-4px;left:0;width:0;height:1.5px;
+  background:var(--gold);
+  transition:width .3s cubic-bezier(.4,0,.2,1);
+}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{width:100%;}
+
+/* Lang selector */
+.lang-wrap{position:relative;}
+
+.lang-btn {
+  display:flex;align-items:center;gap:.5rem;
+  background:rgba(212,168,67,.07);
+  border:1px solid var(--border);
+  color:var(--gold);
+  padding:.42rem .9rem .42rem .55rem;
+  border-radius:8px;cursor:pointer;
+  font-family:'Rajdhani',sans-serif;
+  font-size:.78rem;font-weight:700;letter-spacing:.5px;
+  transition:all .25s;text-transform:uppercase;
+}
+.lang-btn:hover{background:rgba(212,168,67,.14);}
+
+.flag{width:20px;height:14px;border-radius:3px;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.12);}
+.flag svg{width:100%;height:100%;display:block;}
+
+.chevron {
+  width:10px;height:10px;
+  border-right:1.5px solid currentColor;
+  border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg) translate(-2px,-2px);
+  transition:transform .25s;margin-left:2px;
+}
+.lang-btn.open .chevron{transform:rotate(-135deg) translate(-2px,-2px);}
+
+.lang-drop {
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:var(--card2);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  min-width:175px;z-index:2000;
+  box-shadow:0 20px 60px rgba(0,0,0,.6);
+  display:none;flex-direction:column;
+}
+.lang-drop.open{display:flex;}
+
+.lang-opt {
+  display:flex;align-items:center;gap:.7rem;
+  padding:.7rem 1rem;background:none;border:none;
+  color:var(--text2);cursor:pointer;
+  font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:600;
+  text-align:left;width:100%;
+  transition:all .2s;border-left:2.5px solid transparent;
+}
+.lang-opt:hover{background:rgba(212,168,67,.07);color:var(--text);}
+.lang-opt.active{color:var(--gold);font-weight:800;border-left-color:var(--gold);background:rgba(212,168,67,.05);}
+.lang-nm{flex:1;}.lang-cd{font-size:.62rem;color:var(--text2);letter-spacing:1px;}
+
+/* Hamburger */
+.hamburger {
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:.5rem;
+}
+.hamburger span{width:22px;height:1.5px;background:var(--gold);display:block;transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.7px,4.7px);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.7px,-4.7px);}
+
+/* Mobile nav drawer */
+.mob-nav {
+  position:fixed;top:calc(36px + var(--nav-h));left:0;right:0;
+  background:rgba(5,8,15,.98);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  max-height:0;overflow:hidden;
+  transition:max-height .35s ease;z-index:999;
+}
+.mob-nav.open{max-height:420px;}
+
+.mob-nav a {
+  display:block;padding:1rem 1.5rem;
+  color:var(--text2);text-decoration:none;
+  font-family:'Rajdhani',sans-serif;font-size:.88rem;
+  font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  border-bottom:1px solid var(--border2);
+  transition:all .2s;
+}
+.mob-nav a:hover{color:var(--gold);padding-left:2rem;}
+
+.mob-lang{padding:1rem 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;}
+.mob-lang-btn{
+  display:flex;align-items:center;gap:.4rem;
+  padding:.38rem .7rem;border:1px solid var(--border2);
+  border-radius:7px;background:none;color:var(--text2);
+  cursor:pointer;font-family:'Rajdhani',sans-serif;
+  font-size:.75rem;font-weight:700;transition:all .2s;
+}
+.mob-lang-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,.08);}
+
+/* ══════════════════════════════════
+   HERO
+══════════════════════════════════ */
+.hero {
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:calc(36px + var(--nav-h) + 4rem) 1.5rem 4rem;
+  position:relative;overflow:hidden;
+}
+
+/* Animated background layers */
+.hero-bg {
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+
+/* Diagonal lines pattern */
+.hero-lines {
+  position:absolute;inset:0;
+  background-image:repeating-linear-gradient(
+    -55deg,
+    transparent,
+    transparent 60px,
+    rgba(212,168,67,.028) 60px,
+    rgba(212,168,67,.028) 61px
+  );
+}
+
+/* Radial glow */
+.hero-glow {
+  position:absolute;top:-15%;left:50%;transform:translateX(-50%);
+  width:960px;height:960px;
+  background:radial-gradient(ellipse at center,
+    rgba(10,92,240,.14) 0%,
+    rgba(212,168,67,.06) 38%,
+    transparent 72%);
+  animation:breathe 9s ease-in-out infinite;
+}
+
+/* Bottom accent */
+.hero-line-bot {
+  position:absolute;bottom:0;left:0;right:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%);
+  opacity:.3;
+}
+
+/* Corner decorations */
+.hero-corner {
+  position:absolute;width:70px;height:70px;
+  border-color:rgba(212,168,67,.22);border-style:solid;
+}
+.hero-corner.tl{top:calc(36px + var(--nav-h) + 1rem);left:1.5rem;border-width:1.5px 0 0 1.5px;}
+.hero-corner.tr{top:calc(36px + var(--nav-h) + 1rem);right:1.5rem;border-width:1.5px 1.5px 0 0;}
+.hero-corner.bl{bottom:1.5rem;left:1.5rem;border-width:0 0 1.5px 1.5px;}
+.hero-corner.br{bottom:1.5rem;right:1.5rem;border-width:0 1.5px 1.5px 0;}
+
+@keyframes breathe{
+  0%,100%{transform:translateX(-50%) scale(1);}
+  50%{transform:translateX(-50%) scale(1.08);}
+}
+
+/* Floating number decorations */
+.hero-num {
+  position:absolute;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22vw;color:transparent;
+  -webkit-text-stroke:1px rgba(212,168,67,.04);
+  letter-spacing:-0.05em;user-select:none;
+  right:-4vw;top:50%;transform:translateY(-50%);
+  pointer-events:none;line-height:1;
+}
+
+.hero-content{position:relative;z-index:1;max-width:900px;}
+
+.hero-badge {
+  display:inline-flex;align-items:center;gap:.7rem;
+  font-family:'Rajdhani',sans-serif;
+  font-size:.75rem;font-weight:700;
+  letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;
+  border:1px solid rgba(212,168,67,.25);
+  border-radius:30px;padding:.48rem 1.3rem;
+  background:rgba(212,168,67,.05);
+  margin-bottom:2rem;
+  animation:fadeUp .9s ease both;
+}
+.hero-badge-dot{width:7px;height:7px;background:var(--blue2);border-radius:50%;box-shadow:0 0 8px var(--blue);}
+
+.hero-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,16vw,11rem);
+  color:var(--white);
+  letter-spacing:6px;
+  line-height:.9;
+  margin-bottom:1.2rem;
+  animation:fadeUp .9s .1s ease both;
+}
+
+.hero-title .gold-stroke {
+  -webkit-text-stroke:2px var(--gold);
+  color:transparent;
+}
+
+.hero-slash {
+  display:inline-block;
+  width:3px;height:.8em;
+  background:var(--blue);
+  margin:0 .3rem;
+  vertical-align:middle;
+  animation:fadeUp .9s .15s ease both;
+}
+
+.hero-tagline {
+  font-family:'Rajdhani',sans-serif;
+  font-size:clamp(.85rem,1.8vw,1.1rem);
+  letter-spacing:5px;text-transform:uppercase;
+  color:var(--text2);margin-bottom:1.5rem;
+  font-weight:600;
+  animation:fadeUp .9s .2s ease both;
+}
+
+.hero-divider {
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:0 auto 1.5rem;
+  animation:fadeUp .9s .25s ease both;
+}
+
+.hero-desc {
+  font-size:clamp(.95rem,1.6vw,1.1rem);
+  color:var(--text2);max-width:560px;
+  margin:0 auto 2.8rem;
+  line-height:1.85;font-weight:400;
+  animation:fadeUp .9s .3s ease both;
+}
+
+.hero-btns {
+  display:flex;gap:1rem;justify-content:center;
+  flex-wrap:wrap;
+  animation:fadeUp .9s .4s ease both;
+}
+
+/* ── Buttons ── */
+.btn-gold {
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dim));
+  color:var(--bg);padding:.88rem 2.2rem;
+  font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  border:none;border-radius:10px;cursor:pointer;
+  text-decoration:none;
+  transition:all .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 6px 24px rgba(212,168,67,.22);
+}
+.btn-gold:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(212,168,67,.32);filter:brightness(1.08);}
+.btn-gold:active{transform:translateY(-1px);}
+
+.btn-outline {
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:transparent;
+  border:1px solid rgba(212,168,67,.35);
+  color:var(--gold);padding:.88rem 2.2rem;
+  font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  border-radius:10px;cursor:pointer;
+  text-decoration:none;
+  transition:all .3s;
+}
+.btn-outline:hover{background:rgba(212,168,67,.08);border-color:var(--gold);transform:translateY(-3px);}
+
+.btn-blue {
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:linear-gradient(135deg,var(--blue),#0840B8);
+  color:#fff;padding:.88rem 2.2rem;
+  font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;
+  border:none;border-radius:10px;cursor:pointer;
+  text-decoration:none;
+  transition:all .3s;
+  box-shadow:0 6px 24px rgba(10,92,240,.22);
+}
+.btn-blue:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(10,92,240,.32);}
+
+/* Scroll cue */
+.hero-scroll {
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.4rem;
+  color:var(--text2);
+  font-family:'Rajdhani',sans-serif;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
+  animation:scrollBounce 2.5s ease-in-out infinite;
+}
+.hero-scroll svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5;}
+@keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+
+/* ══════════════════════════════════
+   SHARED
+══════════════════════════════════ */
+.container{max-width:1300px;margin:0 auto;padding:0 1.5rem;}
+section{padding:5.5rem 1.5rem;}
+
+.section-eyebrow {
+  display:flex;align-items:center;gap:.8rem;
+  font-family:'Rajdhani',sans-serif;font-size:.72rem;
+  letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;font-weight:700;
+  margin-bottom:.8rem;
+}
+.section-eyebrow::before{content:'';width:28px;height:1.5px;background:var(--gold);opacity:.6;}
+
+.section-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  color:var(--white);letter-spacing:2px;
+  line-height:1;margin-bottom:1rem;
+}
+
+.section-desc{color:var(--text2);font-size:.92rem;max-width:560px;line-height:1.78;}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.reveal.vis-delay-1{transition-delay:.1s;}
+.reveal.vis-delay-2{transition-delay:.2s;}
+
+/* Separator */
+.sep-line {
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),transparent);
+  margin:0;
+}
+
+/* ══════════════════════════════════
+   STATS
+══════════════════════════════════ */
+.stats-wrap{padding:0 1.5rem 5rem;}
+
+.stats-grid {
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  position:relative;
+}
+
+.stats-grid::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),var(--gold),var(--blue),transparent);
+}
+
+.stat-item {
+  padding:2.5rem 1.5rem;text-align:center;
+  border-right:1px solid var(--border);
+  position:relative;transition:background .3s;
+}
+.stat-item:last-child{border-right:none;}
+.stat-item:hover{background:rgba(212,168,67,.03);}
+
+.stat-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.5rem;color:var(--gold);
+  line-height:1;margin-bottom:.5rem;letter-spacing:2px;
+}
+.stat-label {
+  font-family:'Rajdhani',sans-serif;
+  font-size:.7rem;color:var(--text2);
+  text-transform:uppercase;letter-spacing:2px;font-weight:600;
+}
+
+/* ══════════════════════════════════
+   MANIFESTO
+══════════════════════════════════ */
+.manifesto-sec {
+  padding:5rem 1.5rem;
+  position:relative;overflow:hidden;
+}
+.manifesto-sec::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(10,92,240,.05),transparent 60%,rgba(212,168,67,.03));
+}
+.manifesto-inner{max-width:860px;margin:0 auto;text-align:center;position:relative;}
+.manifesto-orn{width:1px;height:70px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);margin:0 auto 2rem;}
+
+.manifesto-quote {
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.6rem,3.8vw,2.7rem);
+  color:var(--white);font-weight:600;font-style:italic;
+  line-height:1.4;letter-spacing:-.3px;margin-bottom:1.5rem;
+}
+.manifesto-quote::before{content:'«';color:var(--gold);font-style:normal;margin-right:.1em;}
+.manifesto-quote::after{content:'»';color:var(--gold);font-style:normal;margin-left:.1em;}
+.manifesto-attr{font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--text2);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.manifesto-attr span{color:var(--gold);}
+
+/* ══════════════════════════════════
+   FOUNDER
+══════════════════════════════════ */
+.founder-grid {
+  display:grid;grid-template-columns:1fr 1.3fr;
+  gap:4rem;align-items:center;
+  max-width:1100px;margin:3.5rem auto 0;
+}
+
+.founder-visual{position:relative;}
+.founder-frame {
+  aspect-ratio:3/4;border-radius:16px;overflow:hidden;
+  background:var(--card);border:1px solid var(--border);
+  position:relative;
+}
+.founder-frame img{width:100%;height:100%;object-fit:cover;}
+.founder-placeholder{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--card),var(--card2));
+}
+.founder-placeholder svg{width:80px;height:80px;stroke:var(--gold-dim);fill:none;stroke-width:1;opacity:.5;}
+
+.founder-badge-strip{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(5,8,15,.96) 50%,transparent);
+  padding:2rem 1.2rem 1.2rem;
+}
+.founder-name-card{
+  display:inline-flex;align-items:center;gap:.6rem;
+  background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.22);
+  border-radius:8px;padding:.55rem 1rem;
+}
+.founder-name-card span{font-family:'Rajdhani',sans-serif;font-size:.72rem;color:var(--gold);letter-spacing:1.5px;font-weight:700;text-transform:uppercase;}
+
+/* Corner frame lines */
+.fcorn{position:absolute;width:44px;height:44px;border-color:rgba(212,168,67,.3);border-style:solid;}
+.fcorn.tl{top:-10px;left:-10px;border-width:2px 0 0 2px;}
+.fcorn.br{bottom:-10px;right:-10px;border-width:0 2px 2px 0;}
+
+.founder-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.6rem;color:var(--white);
+  letter-spacing:2px;margin-bottom:.25rem;
+  line-height:1;
+}
+.founder-role-tag{
+  font-family:'Rajdhani',sans-serif;font-size:.72rem;color:var(--blue2);
+  letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  margin-bottom:1.5rem;padding-bottom:1.2rem;
+  border-bottom:1px solid var(--border2);
+}
+.founder-body{color:var(--text2);font-size:.93rem;line-height:1.85;margin-bottom:1.8rem;}
+
+.tag-cloud{display:flex;gap:.6rem;flex-wrap:wrap;}
+.tag{
+  font-family:'Rajdhani',sans-serif;font-size:.68rem;
+  letter-spacing:1px;text-transform:uppercase;font-weight:700;
+  color:var(--gold);border:1px solid rgba(212,168,67,.27);
+  border-radius:20px;padding:.38rem .9rem;
+  background:rgba(212,168,67,.05);transition:all .2s;cursor:default;
+}
+.tag:hover{background:rgba(212,168,67,.1);border-color:var(--gold);}
+
+/* ══════════════════════════════════
+   LEADERS
+══════════════════════════════════ */
+.leaders-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:1.1rem;
+}
+
+.leader-card {
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:14px;padding:1.8rem 1.2rem;
+  text-align:center;cursor:default;
+  transition:all .35s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;
+}
+.leader-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--blue),var(--gold),var(--blue),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.leader-card:hover{
+  border-color:rgba(212,168,67,.28);
+  background:var(--card2);
+  transform:translateY(-7px);
+  box-shadow:0 20px 50px rgba(0,0,0,.35),0 0 0 1px rgba(212,168,67,.1);
+}
+.leader-card:hover::before{opacity:1;}
+
+.leader-av {
+  width:76px;height:76px;border-radius:50%;
+  border:2px solid rgba(212,168,67,.25);
+  margin:0 auto 1rem;overflow:hidden;
+  background:linear-gradient(135deg,var(--bg),var(--card2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);
+  transition:border-color .3s,box-shadow .3s;
+}
+.leader-card:hover .leader-av{border-color:var(--gold);box-shadow:0 0 16px rgba(212,168,67,.2);}
+.leader-av img{width:100%;height:100%;object-fit:cover;}
+
+.leader-nm{font-family:'Rajdhani',sans-serif;font-size:.9rem;color:var(--white);font-weight:700;margin-bottom:.25rem;line-height:1.3;}
+.leader-city{font-family:'Rajdhani',sans-serif;font-size:.68rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700;}
+.leader-role{font-size:.72rem;color:var(--text2);margin-top:.2rem;font-weight:500;}
+
+/* Empty state */
+.leaders-empty{
+  grid-column:1/-1;text-align:center;padding:3rem;
+  color:var(--text2);font-size:.9rem;
+}
+
+/* ══════════════════════════════════
+   VALUES
+══════════════════════════════════ */
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+
+.value-card{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:14px;padding:2.2rem 2rem;
+  position:relative;overflow:hidden;transition:all .35s;
+}
+.value-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.value-card:hover{border-color:rgba(212,168,67,.2);background:var(--card2);transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,.25);}
+.value-card:hover::after{opacity:1;}
+
+.value-icon{
+  width:52px;height:52px;
+  background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.18);
+  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:1.3rem;transition:all .3s;
+}
+.value-card:hover .value-icon{background:rgba(212,168,67,.14);border-color:rgba(212,168,67,.35);}
+.value-icon svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.5;}
+
+.value-name{font-family:'Rajdhani',sans-serif;font-size:1.1rem;color:var(--white);font-weight:700;margin-bottom:.7rem;letter-spacing:.5px;}
+.value-desc{color:var(--text2);font-size:.86rem;line-height:1.72;}
+
+/* ══════════════════════════════════
+   STEPS
+══════════════════════════════════ */
+.steps-sec{
+  padding:5.5rem 1.5rem;
+  background:linear-gradient(180deg,transparent,rgba(10,92,240,.04),transparent);
+}
+
+.steps-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:2rem;max-width:940px;margin:3.5rem auto 0;
+  position:relative;
+}
+.steps-grid::before{
+  content:'';position:absolute;top:38px;left:calc(16.67% + 1rem);right:calc(16.67% + 1rem);
+  height:1px;background:linear-gradient(90deg,var(--gold),rgba(212,168,67,.2),var(--gold));
+  opacity:.25;
+}
+
+.step-card{
+  text-align:center;padding:2.2rem 1.5rem;
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:14px;transition:all .3s;
+}
+.step-card:hover{border-color:rgba(212,168,67,.2);transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,.25);}
+
+.step-num{
+  width:68px;height:68px;margin:0 auto 1.3rem;
+  background:linear-gradient(135deg,rgba(212,168,67,.12),rgba(212,168,67,.04));
+  border:2px solid rgba(212,168,67,.28);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);letter-spacing:1px;
+}
+.step-title{font-family:'Rajdhani',sans-serif;font-size:1rem;color:var(--white);font-weight:700;margin-bottom:.5rem;letter-spacing:.5px;}
+.step-desc{font-size:.82rem;color:var(--text2);line-height:1.65;}
+
+/* ══════════════════════════════════
+   JOIN
+══════════════════════════════════ */
+.join-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:20px;padding:3.5rem;
+  position:relative;overflow:hidden;
+  max-width:680px;margin:0 auto;
+}
+.join-card::before{
+  content:'';position:absolute;top:-100px;right:-100px;
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(212,168,67,.06),transparent 70%);
+}
+.join-card::after{
+  content:'';position:absolute;bottom:-80px;left:-80px;
+  width:240px;height:240px;
+  background:radial-gradient(circle,rgba(10,92,240,.06),transparent 70%);
+}
+.join-inner{position:relative;z-index:1;}
+
+.join-title{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--white);letter-spacing:2px;margin-bottom:.5rem;}
+.join-desc{color:var(--text2);font-size:.88rem;margin-bottom:2rem;line-height:1.75;}
+
+.join-form{display:flex;flex-direction:column;gap:.9rem;}
+
+.form-input{
+  padding:.9rem 1.1rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--border2);
+  color:var(--white);border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:500;
+  transition:all .25s;width:100%;
+  -webkit-appearance:none;appearance:none;
+}
+.form-input:focus{outline:none;border-color:rgba(212,168,67,.45);background:rgba(255,255,255,.06);box-shadow:0 0 0 3px rgba(212,168,67,.07);}
+.form-input::placeholder{color:var(--text2);}
+select.form-input option{background:var(--card2);}
+
+/* Success */
+.join-success{display:none;text-align:center;padding:1rem 0;}
+.success-icon{width:70px;height:70px;background:rgba(34,197,94,.1);border:2px solid rgba(34,197,94,.28);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;}
+.success-icon svg{width:30px;height:30px;stroke:#22C55E;fill:none;stroke-width:2;}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--white);letter-spacing:2px;margin-bottom:.5rem;}
+.success-desc{color:var(--text2);font-size:.88rem;margin-bottom:1.5rem;line-height:1.65;}
+
+.btn-whatsapp{
+  display:inline-flex;align-items:center;gap:.7rem;
+  background:linear-gradient(135deg,#25D366,#128C7E);
+  color:#fff;padding:.88rem 2.2rem;border-radius:10px;
+  text-decoration:none;
+  font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:700;
+  letter-spacing:.8px;text-transform:uppercase;
+  transition:all .3s;box-shadow:0 6px 24px rgba(37,211,102,.2);
+}
+.btn-whatsapp:hover{transform:translateY(-3px);box-shadow:0 14px 32px rgba(37,211,102,.3);}
+.btn-whatsapp svg{width:22px;height:22px;fill:currentColor;}
+
+/* ══════════════════════════════════
+   FOOTER
+══════════════════════════════════ */
+footer{
+  border-top:1px solid var(--border);
+  padding:3.5rem 1.5rem 2rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+footer::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+
+.footer-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:2.8rem;color:var(--gold);letter-spacing:6px;
+  margin-bottom:.4rem;
+  cursor:pointer;user-select:none;
+  transition:all .2s;display:inline-block;
+}
+.footer-logo:hover{text-shadow:0 0 24px rgba(212,168,67,.4);}
+.footer-logo.clicked{transform:scale(.97);}
+.footer-tagline{font-family:'Rajdhani',sans-serif;font-size:.65rem;color:var(--text2);letter-spacing:3.5px;text-transform:uppercase;margin-bottom:1.5rem;}
+
+.footer-divider{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 1.5rem;}
+.footer-links{display:flex;justify-content:center;gap:2rem;list-style:none;flex-wrap:wrap;margin-bottom:1.5rem;}
+.footer-links a{font-family:'Rajdhani',sans-serif;font-size:.75rem;color:var(--text2);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;transition:color .2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-copy{font-size:.75rem;color:var(--text2);user-select:none;}
+
+/* Footer click indicator */
+.footer-click-hint{font-size:.62rem;color:var(--text2);opacity:0;margin-top:.5rem;transition:opacity .4s;font-style:italic;}
+.footer-click-hint.show{opacity:.6;}
+
+/* ══════════════════════════════════
+   ADMIN PANEL
+══════════════════════════════════ */
+#adm{position:fixed;inset:0;background:var(--bg);z-index:9999;display:none;flex-direction:column;}
+#adm.on{display:flex;}
+
+.adm-topbar{
+  height:60px;background:rgba(5,8,15,.97);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 1.5rem;flex-shrink:0;gap:1rem;
+}
+.adm-topbar-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.2rem;color:var(--gold);letter-spacing:3px;
+  white-space:nowrap;
+}
+.adm-close{
+  background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.22);
+  color:var(--gold);padding:.45rem 1rem;border-radius:8px;cursor:pointer;
+  font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;
+  letter-spacing:.5px;text-transform:uppercase;transition:all .2s;
+  white-space:nowrap;flex-shrink:0;
+}
+.adm-close:hover{background:rgba(212,168,67,.18);}
+
+.adm-layout{display:flex;flex:1;overflow:hidden;}
+
+/* Sidebar */
+.adm-sidebar{
+  width:210px;flex-shrink:0;
+  background:var(--card);border-right:1px solid var(--border);
+  padding:1rem .7rem;display:flex;flex-direction:column;gap:.35rem;
+  overflow-y:auto;
+}
+
+.adm-nav-item{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.72rem .9rem;color:var(--text2);cursor:pointer;
+  border-radius:9px;font-family:'Nunito',sans-serif;
+  font-size:.82rem;font-weight:600;
+  transition:all .2s;border-left:2.5px solid transparent;
+  white-space:nowrap;
+}
+.adm-nav-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;}
+.adm-nav-item:hover{color:var(--gold);background:rgba(212,168,67,.05);}
+.adm-nav-item.active{color:var(--gold);background:rgba(212,168,67,.08);border-left-color:var(--gold);}
+
+/* Main */
+.adm-main{flex:1;overflow-y:auto;padding:2rem;min-width:0;}
+.adm-panel{display:none;}
+.adm-panel.active{display:block;}
+
+.adm-h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:2px;margin-bottom:1.5rem;}
+
+/* Settings sections */
+.settings-section{
+  background:var(--card);border:1px solid var(--border2);
+  border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;
+}
+.settings-section-title{
+  font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;
+  color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;
+  margin-bottom:1.2rem;padding-bottom:.7rem;
+  border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;gap:.5rem;
+}
+.settings-section-title svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;}
+
+.adm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;}
+.adm-grid.col3{grid-template-columns:repeat(3,1fr);}
+.adm-grid.full{grid-template-columns:1fr;}
+
+.adm-field{display:flex;flex-direction:column;gap:.35rem;}
+.adm-field.full{grid-column:1/-1;}
+
+.adm-label{font-family:'Rajdhani',sans-serif;font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;font-weight:700;}
+
+.adm-input{
+  padding:.7rem .9rem;
+  background:var(--bg2);border:1px solid var(--border2);
+  color:var(--text);border-radius:8px;
+  font-family:'Nunito',sans-serif;font-size:.85rem;
+  transition:border-color .2s;width:100%;
+}
+.adm-input:focus{outline:none;border-color:rgba(212,168,67,.35);box-shadow:0 0 0 2px rgba(212,168,67,.06);}
+textarea.adm-input{resize:vertical;min-height:90px;}
+
+.adm-btns-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:.5rem;}
+.adm-msg{font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--success);font-weight:700;display:inline-block;}
+
+/* Photo preview */
+.photo-preview{
+  display:flex;align-items:center;gap:1rem;
+  margin-top:.7rem;
+}
+.photo-thumb{
+  width:60px;height:60px;border-radius:10px;
+  background:var(--bg2);border:1px solid var(--border2);
+  overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.photo-thumb-placeholder{color:var(--text2);font-size:.7rem;text-align:center;padding:.5rem;}
+
+/* Table */
+.adm-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.adm-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border-radius:10px;overflow:hidden;margin-top:1rem;min-width:500px;}
+.adm-table th{background:var(--card2);padding:.75rem 1rem;text-align:left;font-family:'Rajdhani',sans-serif;font-size:.66rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700;border-bottom:1px solid var(--border);}
+.adm-table td{padding:.72rem 1rem;border-bottom:1px solid var(--border2);color:var(--text2);vertical-align:middle;}
+.adm-table tr:last-child td{border-bottom:none;}
+.adm-table tr:hover td{background:rgba(255,255,255,.02);}
+
+.adm-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
+.adm-btn-sm{padding:.38rem .75rem;font-size:.65rem;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-family:'Rajdhani',sans-serif;transition:all .2s;letter-spacing:.3px;text-transform:uppercase;}
+.adm-edit{background:rgba(10,92,240,.18);color:#6b9bff;border:1px solid rgba(10,92,240,.28);}
+.adm-del{background:rgba(239,68,68,.14);color:#f87171;border:1px solid rgba(239,68,68,.24);}
+.adm-btn-sm:hover{transform:translateY(-1px);opacity:.9;}
+
+/* Login */
+.adm-login-wrap{
+  position:absolute;inset:0;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:1rem;z-index:10;padding:1.5rem;
+}
+.adm-login-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:2.5rem;width:100%;max-width:380px;text-align:center;
+}
+.adm-login-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--white);letter-spacing:3px;margin-bottom:.4rem;}
+.adm-login-sub{font-size:.82rem;color:var(--text2);margin-bottom:1.5rem;}
+.adm-err{font-size:.78rem;color:var(--danger);min-height:1.2em;margin-top:.5rem;font-weight:700;}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:10000;padding:1.5rem;backdrop-filter:blur(5px);}
+.modal-bg.on{display:flex;}
+.modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:520px;box-shadow:0 30px 80px rgba(0,0,0,.6);max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--white);letter-spacing:2px;margin-bottom:1.3rem;}
+.modal-grid{display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.3rem;}
+.modal-footer{display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;}
+
+/* ══════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════ */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(26px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+@keyframes shimmer{
+  0%{background-position:-200% center;}
+  100%{background-position:200% center;}
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════ */
+@media(max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .stat-item:nth-child(2){border-right:none;}
+  .stat-item:nth-child(3){border-right:1px solid var(--border);}
+  .stat-item:nth-child(1),.stat-item:nth-child(2){border-bottom:1px solid var(--border);}
+  .values-grid{grid-template-columns:repeat(2,1fr);}
+  .founder-grid{grid-template-columns:1fr;gap:2.5rem;}
+  .founder-visual{max-width:360px;margin:0 auto;}
+  .adm-grid.col3{grid-template-columns:repeat(2,1fr);}
+}
+
+@media(max-width:768px){
+  :root{--nav-h:60px;}
+  nav{padding:0 1rem;}
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  
+  section{padding:4rem 1rem;}
+  .stats-wrap{padding:0 1rem 4rem;}
+
+  .hero-corner{display:none;}
+  .hero-num{font-size:40vw;opacity:.4;}
+  
+  .stats-grid{border-radius:12px;}
+  .stat-item:nth-child(3){border-right:none;}
+  
+  .values-grid{grid-template-columns:1fr;}
+  .steps-grid{grid-template-columns:1fr;max-width:400px;}
+  .steps-grid::before{display:none;}
+  
+  .join-card{padding:2rem 1.5rem;}
+
+  /* Admin responsive */
+  .adm-layout{flex-direction:column;}
+  .adm-sidebar{
+    width:100%;flex-direction:row;
+    overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+    border-right:none;border-bottom:1px solid var(--border);
+    padding:.4rem .6rem;gap:.3rem;flex-shrink:0;
+    scrollbar-width:none;
+  }
+  .adm-sidebar::-webkit-scrollbar{display:none;}
+  .adm-nav-item{
+    border-left:none;border-bottom:2.5px solid transparent;
+    flex-shrink:0;border-radius:8px;
+    padding:.6rem 1rem;font-size:.78rem;
+  }
+  .adm-nav-item.active{border-left:none;border-bottom-color:var(--gold);}
+  .adm-main{padding:1.2rem;}
+  .adm-grid{grid-template-columns:1fr;}
+  .adm-grid.col3{grid-template-columns:1fr;}
+}
+
+@media(max-width:480px){
+  :root{--nav-h:58px;}
+  .logo-title{font-size:1.3rem;}
+  
+  .hero-title{font-size:4rem;}
+  .hero-btns{flex-direction:column;}
+  .btn-gold,.btn-outline,.btn-blue{width:100%;justify-content:center;}
+  
+  .stat-num{font-size:2.8rem;}
+  .leader-av{width:64px;height:64px;font-size:1.6rem;}
+  .leaders-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+  
+  .join-card{padding:1.5rem 1.2rem;}
+  .join-title{font-size:1.9rem;}
+  
+  footer{padding:2rem 1rem;}
+  .footer-links{gap:1rem;}
+
+  .adm-topbar{padding:0 .8rem;}
+  .adm-topbar-title{font-size:.95rem;}
+  .adm-main{padding:.9rem;}
+  .modal-box{padding:1.3rem;}
+}
+
+@media(max-width:360px){
+  .hero-title{font-size:3.2rem;}
+  .stats-grid{grid-template-columns:1fr;}
+  .stat-item{border-right:none!important;border-bottom:1px solid var(--border)!important;}
+  .stat-item:last-child{border-bottom:none!important;}
+  .leaders-grid{grid-template-columns:repeat(2,1fr);}
+}
+</style>
 </head>
 <body>
 
-<!-- Навигация -->
+<!-- ══ TICKER BANNER ══ -->
+<div id="ticker">
+  <div class="ticker-inner" id="tickerInner">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<!-- ══ NAV ══ -->
 <nav id="mainNav">
   <a href="#top" class="nav-logo">
-    <span class="logo-mark"><img src="logo.jpg" alt="BARYS" onerror="this.style.display='none'"></span>
-    <span>
-      <span class="logo-text">BARYS</span>
-      <span class="logo-tagline">SPORT COMMUNITY</span>
-    </span>
+    <div class="logo-icon" id="logoIconWrap">
+      <img src="logo.jpg" alt="BARYS" onerror="this.style.display='none';document.getElementById('logoFallback').style.display='flex'"/>
+      <div id="logoFallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
+        <span class="logo-icon-fallback">B</span>
+      </div>
+    </div>
+    <div class="logo-words">
+      <span class="logo-title">BARYS</span>
+      <span class="logo-sub">Leaders Community</span>
+    </div>
   </a>
-  <ul class="nav-center">
+
+  <ul class="nav-links" id="navLinks">
     <li><a href="#leaders" data-i18n="nav_leaders">Лидерлер</a></li>
     <li><a href="#values" data-i18n="nav_values">Құндылықтар</a></li>
     <li><a href="#join" data-i18n="nav_join">Қосылу</a></li>
   </ul>
-  <div style="display:flex; gap:1rem; align-items:center;">
-    <div class="lang-wrap" id="langWrap"></div>
-    <button class="hamburger" id="hamburger">☰</button>
+
+  <div style="display:flex;align-items:center;gap:.75rem;">
+    <div class="lang-wrap" id="langWrap">
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()">
+        <span class="flag" id="curFlag"></span>
+        <span id="curCode">KK</span>
+        <span class="chevron"></span>
+      </button>
+      <div class="lang-drop" id="langDrop"></div>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMob()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
-<!-- Мобильное меню -->
-<div class="mobile-nav" id="mobileNav">
-  <a href="#leaders">Лидерлер</a><a href="#values">Құндылықтар</a><a href="#join">Қосылу</a>
-  <div class="mobile-lang" id="mobileLang"></div>
+<!-- Mobile nav -->
+<div class="mob-nav" id="mobNav">
+  <a href="#leaders" onclick="closeMob()" data-i18n="nav_leaders">Лидерлер</a>
+  <a href="#values"  onclick="closeMob()" data-i18n="nav_values">Құндылықтар</a>
+  <a href="#join"    onclick="closeMob()" data-i18n="nav_join">Қосылу</a>
+  <div class="mob-lang" id="mobLangBtns"></div>
 </div>
 
-<!-- Hero / Баннер -->
-<section class="hero" id="top">
-  <div class="hero-bg"></div>
+<!-- ══ HERO ══ -->
+<div class="hero" id="top">
+  <div class="hero-bg">
+    <div class="hero-lines"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-line-bot"></div>
+  </div>
+  <div class="hero-num">B</div>
+  <div class="hero-corner tl"></div>
+  <div class="hero-corner tr"></div>
+  <div class="hero-corner bl"></div>
+  <div class="hero-corner br"></div>
+
   <div class="hero-content">
-    <div class="hero-badge" data-i18n="hero_badge">ҚАЗАҚСТАН · 2026</div>
-    <h1 class="hero-title"><span id="heroTitle">BAR</span><em>YS</em></h1>
-    <p class="hero-sub" id="heroSub">КҮШ. БІРЛІК. ЖЕҢІС.</p>
-    <p class="hero-desc" data-i18n="hero_desc">Спорттық рух пен жеңіске жетелейтін қауымдастық</p>
-    <div style="display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap;">
-      <a href="#leaders" class="btn-gold">ЛИДЕРЛЕР</a>
-      <a href="#join" class="btn-outline">ҚОСЫЛУ</a>
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      <span data-i18n="hero_badge">Қазақстан · 2026</span>
+      <span class="hero-badge-dot"></span>
+    </div>
+    <h1 class="hero-title">BAR<span class="gold-stroke">YS</span></h1>
+    <p class="hero-tagline" data-i18n="hero_sub">Күш · Бірлік · Мақсат</p>
+    <div class="hero-divider"></div>
+    <p class="hero-desc" data-i18n="hero_desc">Қазақстанның үздік лидерлерін біріктіретін озық қауымдастық</p>
+    <div class="hero-btns">
+      <a href="#leaders" class="btn-gold" data-i18n="btn_leaders">Лидерлерді танысу</a>
+      <a href="#join"    class="btn-outline" data-i18n="btn_join">Қосылу</a>
     </div>
   </div>
-</section>
 
-<!-- Статистика -->
-<div class="container">
-  <div class="stats-grid reveal">
-    <div class="stat-item"><div class="stat-num" id="statCities">0</div><div class="stat-label">Қала</div></div>
-    <div class="stat-item"><div class="stat-num" id="statLeaders">0</div><div class="stat-label">Лидер</div></div>
-    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Рух</div></div>
-    <div class="stat-item"><div class="stat-num">2026</div><div class="stat-label">Жыл</div></div>
+  <div class="hero-scroll">
+    <span data-i18n="scroll">Төмен қараңыз</span>
+    <svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
   </div>
 </div>
 
-<!-- Основатель -->
-<section id="founder">
-  <div class="container founder-grid">
-    <div class="founder-frame" id="founderFrame"><div class="founder-placeholder" style="display:flex; align-items:center; justify-content:center; height:100%; color:var(--gold);">📸</div></div>
-    <div class="founder-info">
-      <div class="section-tag">НЕГІЗДЕУШІ</div>
-      <h3 id="founderName">Dias</h3>
-      <p class="founder-role" id="founderRole">Негізін қалаушы · BARYS</p>
-      <p id="founderDesc">BARYS — спорт пен бірліктің символы.</p>
+<!-- ══ STATS ══ -->
+<div class="container">
+  <div class="stats-wrap reveal">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num" id="statCities" data-target="0">0</div>
+        <div class="stat-label" data-i18n="stat_cities">Қалалар</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="statLeaders" data-target="0">0</div>
+        <div class="stat-label" data-i18n="stat_leaders">Лидерлер</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label" data-i18n="stat_unity">Бірлік</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2026</div>
+        <div class="stat-label" data-i18n="stat_year">Жыл</div>
+      </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- Лидеры -->
-<section id="leaders">
-  <div class="container">
-    <div class="section-tag">ҚАЛА ЛИДЕРЛЕРІ</div>
-    <h2 class="section-title">Біздің команда</h2>
-    <div class="leaders-grid" id="leadersGrid"></div>
-  </div>
-</section>
-
-<!-- Ценности (кратко) -->
-<section id="values">
-  <div class="container">
-    <div class="section-tag">ҚҰНДЫЛЫҚТАР</div>
-    <h2 class="section-title">BARYS рухы</h2>
-    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; margin-top:2rem;">
-      <div><h3 style="color:var(--gold);">🥇 Ынтымақ</h3><p>Бір-бірімізге толық сенім</p></div>
-      <div><h3 style="color:var(--gold);">🤝 Бірлік</h3><p>Барлық лидерлер тең</p></div>
-      <div><h3 style="color:var(--gold);">🎯 Мақсат</h3><p>Нақты мақсатқа жету</p></div>
+<!-- ══ MANIFESTO ══ -->
+<div class="container">
+  <section class="manifesto-sec reveal">
+    <div class="manifesto-inner">
+      <div class="section-eyebrow" style="justify-content:center;margin-bottom:1.5rem;" data-i18n="manifesto_label">Манифест</div>
+      <div class="manifesto-orn"></div>
+      <p class="manifesto-quote" data-i18n="manifesto_quote">Нағыз лидер — халқына қызмет ететін адам</p>
+      <p class="manifesto-attr">— <span>BARYS</span>, 2026</p>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
-<!-- Форма -->
-<section id="join">
-  <div class="container join-wrapper">
-    <h2 style="font-family:'Playfair Display'; font-size:2.5rem; margin-bottom:1.5rem;">ҚОСЫЛУ</h2>
-    <div id="joinFormWrap">
-      <form id="joinForm">
-        <input class="form-input" id="jfName" placeholder="Аты-жөніңіз" required>
-        <select class="form-input" id="jfCity" required></select>
-        <button type="submit" class="btn-gold" style="width:100%; justify-content:center;">ЖІБЕРУ</button>
-      </form>
-    </div>
-    <div id="joinSuccess" style="display:none; text-align:center;">
-      <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
-      <h3>Құттықтаймыз!</h3>
-      <p style="margin:1rem 0;">WhatsApp тобына өтіңіз:</p>
-      <a id="waLink" target="_blank" class="btn-gold">WhatsApp-қа өту</a>
-    </div>
-  </div>
-</section>
+<div class="sep-line"></div>
 
-<!-- Футер -->
-<footer style="text-align:center; padding:3rem 1.5rem; border-top:1px solid var(--border); position:relative; z-index:1;">
-  <div class="footer-logo" style="font-size:2.5rem; font-weight:900; color:var(--gold); cursor:pointer; display:inline-block;" id="footerBarys">BARYS</div>
-  <p style="margin-top:1rem; color:var(--text2);" data-i18n="footer">© 2026 BARYS. Барлық құқықтар қорғалған.</p>
+<!-- ══ FOUNDER ══ -->
+<div class="container">
+  <section id="founder" class="reveal">
+    <div class="section-eyebrow" data-i18n="founder_label">Негіздеуші</div>
+    <h2 class="section-title" data-i18n="founder_title">Қауымдастық лидері</h2>
+
+    <div class="founder-grid">
+      <div class="founder-visual">
+        <div class="founder-frame" id="founderFrame">
+          <div class="founder-placeholder" id="founderPlaceholder">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          </div>
+        </div>
+        <div class="fcorn tl"></div>
+        <div class="fcorn br"></div>
+        <div class="founder-badge-strip">
+          <div class="founder-name-card">
+            <span data-i18n="founder_label">Негіздеуші · BARYS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="founder-info">
+        <div class="founder-name" id="founderName">BARYS Лидері</div>
+        <div class="founder-role-tag" id="founderRole">Негіздеуші · BARYS</div>
+        <p class="founder-body" id="founderDesc">BARYS қауымдастығы туралы сипаттама осында болады.</p>
+        <div class="tag-cloud">
+          <span class="tag" data-i18n="badge1">Визионер</span>
+          <span class="tag" data-i18n="badge2">Сенімнің символы</span>
+          <span class="tag" data-i18n="badge3">Ұйымдастырушы</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="sep-line"></div>
+
+<!-- ══ LEADERS ══ -->
+<div class="container">
+  <section id="leaders" class="reveal">
+    <div class="section-eyebrow" data-i18n="leaders_label">Қала лидерлері</div>
+    <h2 class="section-title" data-i18n="leaders_title">Лидерлерімізді танысыңыз</h2>
+    <p class="section-desc" style="margin-bottom:2.5rem;" data-i18n="leaders_desc">Әр қала мен аймақта BARYS идеяларын алға апарып жүрген тұлғалар</p>
+    <div class="leaders-grid" id="leadersGrid">
+      <div class="leaders-empty" data-i18n="loading">Жүктелуде…</div>
+    </div>
+  </section>
+</div>
+
+<div class="sep-line"></div>
+
+<!-- ══ VALUES ══ -->
+<div class="container">
+  <section id="values" class="reveal">
+    <div class="section-eyebrow" data-i18n="values_label">Негізі</div>
+    <h2 class="section-title" data-i18n="values_title">BARYS Құндылықтары</h2>
+    <div class="values-grid" style="margin-top:2.5rem;">
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3 class="value-name" data-i18n="value1">Ынтымақтастық</h3>
+        <p class="value-desc" data-i18n="value1_desc">Бір-бірімізге толық сенім және іс-әрекеттегі шынайылық.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3 class="value-name" data-i18n="value2">Бірлік</h3>
+        <p class="value-desc" data-i18n="value2_desc">Барлық лидерлер тең дәрежеде, бір мақсатқа қарай бірге жұмыс істейді.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">
+          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3 class="value-name" data-i18n="value3">Мақсат</h3>
+        <p class="value-desc" data-i18n="value3_desc">Нақты мақсатқа бағытталған ортақ іс-қимыл және жауапкершілік.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ STEPS ══ -->
+<div class="container">
+  <section class="steps-sec reveal">
+    <div style="text-align:center;">
+      <div class="section-eyebrow" style="justify-content:center;" data-i18n="steps_label">Қосылу жолы</div>
+      <h2 class="section-title" data-i18n="steps_title">Үш қадам</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3 class="step-title" data-i18n="step1_title">Тіркелу</h3>
+        <p class="step-desc" data-i18n="step1_desc">Атыңыз бен қалаңызды толтырыңыз</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3 class="step-title" data-i18n="step2_title">Растау</h3>
+        <p class="step-desc" data-i18n="step2_desc">WhatsApp тобына қосылыңыз</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3 class="step-title" data-i18n="step3_title">Белсенді болу</h3>
+        <p class="step-desc" data-i18n="step3_desc">BARYS қауымдастығымен бірге өсіңіз</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ JOIN ══ -->
+<div class="container">
+  <section id="join" class="reveal">
+    <div class="join-card">
+      <div class="join-inner">
+        <h2 class="join-title" data-i18n="join_title">BARYS-қа қосылыңыз</h2>
+        <p class="join-desc" data-i18n="join_desc">Лидерлік қозғалысымыздың мүшесі болу мүмкіндігін жіберіп алмаңыз.</p>
+        <div id="joinFormWrap">
+          <form class="join-form" id="joinForm">
+            <input class="form-input" type="text" id="jfName"
+              placeholder="Аты-жөніңіз" data-i18n-placeholder="input_name" required/>
+            <select class="form-input" id="jfCity" required>
+              <option value="">— Қала таңдаңыз —</option>
+            </select>
+            <button type="submit" class="btn-gold" style="justify-content:center;" data-i18n="btn_submit">Қосылу</button>
+          </form>
+        </div>
+        <div class="join-success" id="joinSuccess">
+          <div class="success-icon">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3 class="success-title" data-i18n="success_title">Құттықтаймыз!</h3>
+          <p class="success-desc" data-i18n="success_desc">WhatsApp тобына кіру үшін басыңыз:</p>
+          <a href="#" id="waLink" target="_blank" class="btn-whatsapp">
+            <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span data-i18n="btn_whatsapp">WhatsApp</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-logo" id="footerLogo">BARYS</div>
+  <div class="footer-tagline">Leaders Community · Kazakhstan</div>
+  <div class="footer-click-hint" id="footerHint"></div>
+  <div class="footer-divider"></div>
+  <ul class="footer-links">
+    <li><a href="#leaders" data-i18n="nav_leaders">Лидерлер</a></li>
+    <li><a href="#values"  data-i18n="nav_values">Құндылықтар</a></li>
+    <li><a href="#join"    data-i18n="nav_join">Қосылу</a></li>
+  </ul>
+  <p class="footer-copy" data-i18n="footer">© 2026 BARYS — Барлық құқықтар қорғалған</p>
 </footer>
 
-<!-- АДМИН ПАНЕЛЬ -->
+<!-- ══ ADMIN PANEL ══ -->
 <div id="adm">
   <div class="adm-topbar">
-    <h2 style="color:var(--gold);">BARYS Admin</h2>
-    <button onclick="closeAdmin()" class="btn-outline" style="padding:0.5rem 1.5rem;">Жабу</button>
+    <div class="adm-topbar-title">BARYS ADMIN</div>
+    <button onclick="closeAdmin()" class="adm-close">✕ Жабу</button>
   </div>
   <div class="adm-layout">
-    <!-- Логин -->
-    <div id="admLogin" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:var(--navy);">
-      <div style="background:var(--card); padding:2.5rem; border-radius:24px; width:90%; max-width:360px;">
-        <h3>Кіру</h3>
-        <input type="password" id="admPass" class="adm-input" placeholder="Пароль" style="margin:1rem 0;">
-        <div id="admErr" style="color:var(--danger); min-height:24px;"></div>
-        <button onclick="admLogin()" class="btn-gold" style="width:100%;">Кіру</button>
+    <!-- Login -->
+    <div class="adm-login-wrap" id="admLogin">
+      <div class="adm-login-card">
+        <div class="adm-login-title">КІРУ</div>
+        <div class="adm-login-sub">Әкімші паролін енгізіңіз</div>
+        <input type="password" class="adm-input" id="admPass"
+          placeholder="Пароль" style="width:100%;margin-bottom:.8rem;"
+          onkeypress="if(event.key==='Enter')admLogin()"/>
+        <div class="adm-err" id="admErr"></div>
+        <button onclick="admLogin()" class="btn-gold" style="width:100%;margin-top:.8rem;justify-content:center;">Кіру</button>
       </div>
     </div>
-    <!-- Основной интерфейс -->
-    <div id="admMain" style="display:none; display:flex; flex:1; overflow:hidden;">
+    <!-- Sidebar + Main (hidden until login) -->
+    <div id="admContent" style="display:none;flex:1;overflow:hidden;display:none;" class="adm-layout">
       <div class="adm-sidebar">
-        <div class="adm-nav-item active" onclick="switchAdmTab('settings',this)">⚙️ Баптаулар</div>
-        <div class="adm-nav-item" onclick="switchAdmTab('leaders',this)">👥 Лидерлер</div>
-        <div class="adm-nav-item" onclick="switchAdmTab('cities',this)">🏙️ Қалалар</div>
+        <div class="adm-nav-item active" onclick="swTab('settings',this)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2m7.07-4.93l-1.41-1.41M4.93 19.07l1.41-1.41M2 12h2m16 0h2"/></svg>
+          Баптаулар
+        </div>
+        <div class="adm-nav-item" onclick="swTab('leaders',this)">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Лидерлер
+        </div>
+        <div class="adm-nav-item" onclick="swTab('cities',this)">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Қалалар
+        </div>
       </div>
       <div class="adm-main">
-        <!-- Баптаулар -->
+        <!-- SETTINGS TAB -->
         <div class="adm-panel active" id="tab-settings">
-          <h3 style="margin-bottom:1.5rem;">Сайт баптаулары</h3>
-          <div class="adm-grid">
-            <div class="adm-field"><label class="adm-label">Баннер тақырыбы</label><input class="adm-input" id="sTitle"></div>
-            <div class="adm-field"><label class="adm-label">Баннер слоганы</label><input class="adm-input" id="sSubtitle"></div>
-            <div class="adm-field"><label class="adm-label">Негіздеуші аты</label><input class="adm-input" id="sFname"></div>
-            <div class="adm-field"><label class="adm-label">Қызметі</label><input class="adm-input" id="sFrole"></div>
-            <div class="adm-field" style="grid-column:1/-1;"><label class="adm-label">Сипаттама</label><textarea class="adm-input" id="sFdesc" rows="3"></textarea></div>
-            <div class="adm-field"><label class="adm-label">Фото URL</label><input class="adm-input" id="sFphoto"></div>
-            <div class="adm-field"><label class="adm-label">Жаңа пароль</label><input class="adm-input" id="sPass" type="password" placeholder="Бос қалдырсаңыз өзгермейді"></div>
+          <h2 class="adm-h2">Сайт баптаулары</h2>
+
+          <!-- Banner section -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              Баннер мазмұны
+            </div>
+            <div class="adm-grid">
+              <div class="adm-field">
+                <label class="adm-label">Тіркер мәтіні 1</label>
+                <input class="adm-input" id="sTicker1" type="text" placeholder="Мысалы: Жаңа лидерлер қабылдануда"/>
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">Тіркер мәтіні 2</label>
+                <input class="adm-input" id="sTicker2" type="text" placeholder="Мысалы: BARYS — Күш, Бірлік, Мақсат"/>
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">Тіркер мәтіні 3</label>
+                <input class="adm-input" id="sTicker3" type="text" placeholder="Мысалы: Қазақстан бойынша лидерлер желісі"/>
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">Тіркер мәтіні 4</label>
+                <input class="adm-input" id="sTicker4" type="text" placeholder="Мысалы: Команда. Жеңіс. Мақтаныш."/>
+              </div>
+            </div>
           </div>
-          <button onclick="saveSettings()" class="btn-gold" style="margin-top:1.5rem;">💾 Сақтау</button>
-          <span id="sMsg" style="margin-left:1rem; color:var(--success);"></span>
+
+          <!-- Founder section -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+              Негіздеуші туралы ақпарат
+            </div>
+            <div class="adm-grid">
+              <div class="adm-field">
+                <label class="adm-label">Негіздеушінің аты-жөні</label>
+                <input class="adm-input" id="sFname" type="text" placeholder="Аты Жөні"/>
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">Негіздеушінің лауазымы</label>
+                <input class="adm-input" id="sFrole" type="text" placeholder="Негіздеуші · BARYS"/>
+              </div>
+              <div class="adm-field full">
+                <label class="adm-label">Сипаттама мәтіні</label>
+                <textarea class="adm-input" id="sFdesc" style="min-height:100px;" placeholder="Негіздеуші туралы қысқаша сипаттама..."></textarea>
+              </div>
+              <div class="adm-field full">
+                <label class="adm-label">Фотосурет сілтемесі (URL)</label>
+                <input class="adm-input" id="sFphoto" type="text" placeholder="https://example.com/photo.jpg"/>
+                <div class="photo-preview" id="photoPreview">
+                  <div class="photo-thumb" id="photoThumb">
+                    <div class="photo-thumb-placeholder">Фото жоқ</div>
+                  </div>
+                  <span style="font-size:.75rem;color:var(--text2);">Алдын ала қарау</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Security section -->
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Қауіпсіздік
+            </div>
+            <div class="adm-grid">
+              <div class="adm-field">
+                <label class="adm-label">Жаңа пароль</label>
+                <input class="adm-input" id="sPass" type="password" placeholder="Бос қалдырсаңыз — өзгермейді"/>
+              </div>
+              <div class="adm-field">
+                <label class="adm-label">Паролді растау</label>
+                <input class="adm-input" id="sPass2" type="password" placeholder="Паролді қайта енгізіңіз"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="adm-btns-row">
+            <button onclick="saveSettings()" class="btn-gold" style="gap:.5rem;">
+              <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              Сақтау
+            </button>
+            <span class="adm-msg" id="sMsg"></span>
+          </div>
         </div>
-        <!-- Лидерлер -->
+
+        <!-- LEADERS TAB -->
         <div class="adm-panel" id="tab-leaders">
-          <button onclick="openLeaderModal()" class="btn-gold" style="margin-bottom:1rem;">➕ Лидер қосу</button>
-          <table class="adm-table"><thead><tr><th>Аты</th><th>Қала</th><th>Қызмет</th><th>Әрекет</th></tr></thead><tbody id="leadersTableBody"></tbody></table>
+          <h2 class="adm-h2">Лидерлерді басқару</h2>
+          <button onclick="openLeaderModal()" class="btn-gold" style="margin-bottom:1.2rem;gap:.5rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Лидер қосу
+          </button>
+          <div class="adm-table-wrap">
+            <table class="adm-table">
+              <thead><tr><th>Аты-жөні</th><th>Қала</th><th>Лауазымы</th><th>Әрекет</th></tr></thead>
+              <tbody id="leadersTableBody"></tbody>
+            </table>
+          </div>
         </div>
-        <!-- Қалалар -->
+
+        <!-- CITIES TAB -->
         <div class="adm-panel" id="tab-cities">
-          <button onclick="openCityModal()" class="btn-gold" style="margin-bottom:1rem;">➕ Қала қосу</button>
-          <table class="adm-table"><thead><tr><th>Қала</th><th>WhatsApp</th><th>Әрекет</th></tr></thead><tbody id="citiesTableBody"></tbody></table>
+          <h2 class="adm-h2">Қалаларды басқару</h2>
+          <button onclick="openCityModal()" class="btn-gold" style="margin-bottom:1.2rem;gap:.5rem;">
+            <svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Қала қосу
+          </button>
+          <div class="adm-table-wrap">
+            <table class="adm-table">
+              <thead><tr><th>Қала атауы</th><th>WhatsApp сілтемесі</th><th>Әрекет</th></tr></thead>
+              <tbody id="citiesTableBody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Модальные окна -->
-<div class="modal-bg" id="leaderModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:10000;" onclick="if(event.target===this)closeModal('leaderModal')">
-  <div style="background:var(--card); padding:2rem; border-radius:24px; width:90%; max-width:500px;">
-    <h3 id="leaderModalTitle">Лидер қосу</h3>
-    <input type="hidden" id="lmId">
-    <input class="adm-input" id="lmName" placeholder="Аты-жөні" style="margin:0.5rem 0;">
-    <input class="adm-input" id="lmRole" placeholder="Қызметі">
-    <select class="adm-input" id="lmCity" style="margin:0.5rem 0;"></select>
-    <input class="adm-input" id="lmPhoto" placeholder="Фото URL">
-    <div style="display:flex; gap:1rem; margin-top:1.5rem;">
-      <button onclick="closeModal('leaderModal')" class="btn-outline">Болдырмау</button>
+<!-- ══ MODALS ══ -->
+<div class="modal-bg" id="leaderModal">
+  <div class="modal-box">
+    <div class="modal-title" id="leaderModalTitle">Лидер қосу</div>
+    <div class="modal-grid">
+      <input type="hidden" id="lmId"/>
+      <input class="adm-input" type="text" id="lmName" placeholder="Аты-жөні"/>
+      <input class="adm-input" type="text" id="lmRole" placeholder="Лауазымы (міндетті емес)"/>
+      <select class="adm-input" id="lmCity"><option value="">— Қала таңдаңыз —</option></select>
+      <input class="adm-input" type="text" id="lmPhoto" placeholder="Фотосурет URL (міндетті емес)"/>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('leaderModal')" class="btn-outline">Бас тарту</button>
       <button onclick="saveLeader()" class="btn-gold">Сақтау</button>
     </div>
   </div>
 </div>
 
-<div class="modal-bg" id="cityModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:10000;" onclick="if(event.target===this)closeModal('cityModal')">
-  <div style="background:var(--card); padding:2rem; border-radius:24px; width:90%; max-width:400px;">
-    <h3 id="cityModalTitle">Қала қосу</h3>
-    <input type="hidden" id="cmId">
-    <input class="adm-input" id="cmName" placeholder="Қала атауы">
-    <input class="adm-input" id="cmWa" placeholder="WhatsApp сілтемесі">
-    <div style="display:flex; gap:1rem; margin-top:1.5rem;">
-      <button onclick="closeModal('cityModal')" class="btn-outline">Болдырмау</button>
+<div class="modal-bg" id="cityModal">
+  <div class="modal-box">
+    <div class="modal-title" id="cityModalTitle">Қала қосу</div>
+    <div class="modal-grid">
+      <input type="hidden" id="cmId"/>
+      <input class="adm-input" type="text" id="cmName" placeholder="Қала атауы"/>
+      <input class="adm-input" type="text" id="cmWa" placeholder="WhatsApp топ сілтемесі"/>
+    </div>
+    <div class="modal-footer">
+      <button onclick="closeModal('cityModal')" class="btn-outline">Бас тарту</button>
       <button onclick="saveCity()" class="btn-gold">Сақтау</button>
     </div>
   </div>
 </div>
 
 <script>
-  // ========== SUPABASE ==========
-  const SUPABASE_URL = 'https://vyeromkisagldmfaxxvs.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_racizsDdHPLvkn0sjpeHNw_LzROpdZ0';
-  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+/* ═══════════════════════════
+   SUPABASE
+═══════════════════════════ */
+const SUPA_URL = 'https://vyeromkisagldmfaxxvs.supabase.co';
+const SUPA_KEY = 'sb_publishable_racizsDdHPLvkn0sjpeHNw_LzROpdZ0';
+const db = window.supabase.createClient(SUPA_URL, SUPA_KEY);
 
-  // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
-  let currentLang = localStorage.getItem('barys_lang') || 'kk';
-  let settings = {};
-  let cities = [];
-  let leaders = [];
-  let adminAuthed = localStorage.getItem('barys_admin') === '1';
-  let footerClickCount = 0;
-  let footerClickTimer = null;
+/* ═══════════════════════════
+   STATE
+═══════════════════════════ */
+let lang = localStorage.getItem('barys_lang') || 'kk';
+let S = {}, C = [], L = [];
+let adminAuthed = localStorage.getItem('barys_admin') === '1';
+let statsAnimated = false;
 
-  // ========== ФЛАГИ И ЯЗЫКИ ==========
-  const FLAGS = {
-    kk: `<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#00AFCA"/><circle cx="10" cy="7" r="2.8" fill="#FFD700"/></svg>`,
-    ru: `<svg viewBox="0 0 20 14"><rect width="20" height="4.67" fill="#fff"/><rect y="4.67" width="20" height="4.67" fill="#0039A6"/><rect y="9.33" width="20" height="4.67" fill="#D52B1E"/></svg>`,
-    en: `<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#012169"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#fff" stroke-width="2.8"/></svg>`,
-    uz: `<svg viewBox="0 0 20 14"><rect width="20" height="4.67" fill="#1EB53A"/><rect y="4.67" width="20" height="4.67" fill="#fff"/><rect y="9.33" width="20" height="4.67" fill="#CE1126"/></svg>`,
-    ky: `<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#E8112D"/><circle cx="10" cy="7" r="3.2" fill="#FFD700"/></svg>`,
-    tr: `<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#E30A17"/><circle cx="8.5" cy="7" r="3.2" fill="#fff"/></svg>`
-  };
-  const LANGS = [
-    { code: 'kk', name: 'Қазақ', label: 'KK' },
-    { code: 'ru', name: 'Русский', label: 'RU' },
-    { code: 'en', name: 'English', label: 'EN' },
-    { code: 'uz', name: "O'zbek", label: 'UZ' },
-    { code: 'ky', name: 'Кыргызча', label: 'KY' },
-    { code: 'tr', name: 'Türkçe', label: 'TR' }
-  ];
+/* ═══════════════════════════
+   FLAGS
+═══════════════════════════ */
+const FLAGS = {
+  kk:`<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#00AFCA"/><circle cx="10" cy="7" r="2.8" fill="#FFD700"/></svg>`,
+  ru:`<svg viewBox="0 0 20 14"><rect width="20" height="4.67" fill="#fff"/><rect y="4.67" width="20" height="4.67" fill="#0039A6"/><rect y="9.33" width="20" height="4.67" fill="#D52B1E"/></svg>`,
+  en:`<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#012169"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#fff" stroke-width="2.8"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#C8102E" stroke-width="1.6"/><path d="M10,0 V14 M0,7 H20" stroke="#fff" stroke-width="4"/><path d="M10,0 V14 M0,7 H20" stroke="#C8102E" stroke-width="2.5"/></svg>`,
+  uz:`<svg viewBox="0 0 20 14"><rect width="20" height="4.67" fill="#1EB53A"/><rect y="4.67" width="20" height="4.67" fill="#fff"/><rect y="9.33" width="20" height="4.67" fill="#CE1126"/></svg>`,
+  ky:`<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#E8112D"/><circle cx="10" cy="7" r="3.2" fill="#FFD700"/></svg>`,
+  tr:`<svg viewBox="0 0 20 14"><rect width="20" height="14" fill="#E30A17"/><circle cx="8.5" cy="7" r="3.2" fill="#fff"/><circle cx="9.8" cy="7" r="2.5" fill="#E30A17"/></svg>`
+};
 
-  const i18n = {
-    kk: { nav_leaders:'Лидерлер',nav_values:'Құндылықтар',nav_join:'Қосылу',hero_badge:'ҚАЗАҚСТАН · 2026',hero_desc:'Спорттық рух пен жеңіске жетелейтін қауымдастық',footer:'© 2026 BARYS. Барлық құқықтар қорғалған.',loading:'Жүктелуде…' },
-    ru: { nav_leaders:'Лидеры',nav_values:'Ценности',nav_join:'Вступить',hero_badge:'КАЗАХСТАН · 2026',hero_desc:'Сообщество спортивного духа и побед',footer:'© 2026 BARYS. Все права защищены.',loading:'Загрузка…' },
-    en: { nav_leaders:'Leaders',nav_values:'Values',nav_join:'Join',hero_badge:'KAZAKHSTAN · 2026',hero_desc:'Community of sports spirit and victories',footer:'© 2026 BARYS. All rights reserved.',loading:'Loading…' },
-    uz: { nav_leaders:'Liderlar',nav_values:'Qadriyatlar',nav_join:"Qo'shilish",hero_badge:"QOZOG'ISTON · 2026",hero_desc:'Sport ruhi va gʻalabalar jamoasi',footer:'© 2026 BARYS. Barcha huquqlar himoyalangan.',loading:'Yuklanmoqda…' },
-    ky: { nav_leaders:'Лидерлер',nav_values:'Баалуулуктар',nav_join:'Кошулуу',hero_badge:'КАЗАКСТАН · 2026',hero_desc:'Спорттук рух жана жеңиштер коомчулугу',footer:'© 2026 BARYS. Бардык укуктар корголгон.',loading:'Жүктөлүүдө…' },
-    tr: { nav_leaders:'Liderler',nav_values:'Değerler',nav_join:'Katıl',hero_badge:'KAZAKİSTAN · 2026',hero_desc:'Spor ruhu ve zaferler topluluğu',footer:'© 2026 BARYS. Tüm hakları saklıdır.',loading:'Yükleniyor…' }
-  };
+const LANGS = [
+  {code:'kk',name:'Қазақ',   label:'KK'},
+  {code:'ru',name:'Русский', label:'RU'},
+  {code:'en',name:'English', label:'EN'},
+  {code:'uz',name:"O'zbek",  label:'UZ'},
+  {code:'ky',name:'Кыргызча',label:'KY'},
+  {code:'tr',name:'Türkçe',  label:'TR'}
+];
 
-  // ========== ИНИЦИАЛИЗАЦИЯ ==========
-  async function init() {
-    await loadData();
-    buildLangUI();
-    applyTranslations();
-    renderPublic();
-    // Восстановление регистрации
-    const reg = localStorage.getItem('barys_registered');
-    if (reg) {
-      try { const d = JSON.parse(reg); if (d.link) showSuccess(d.link); } catch(e){}
-    }
-    // Секретный сброс по кликам на футер
-    document.getElementById('footerBarys').addEventListener('click', handleFooterClick);
-    // Наблюдатель анимации статистики
-    new IntersectionObserver((e)=>{ if(e[0].isIntersecting) animateStats(); }).observe(document.querySelector('.stats-grid'));
+/* ═══════════════════════════
+   TRANSLATIONS
+═══════════════════════════ */
+const T = {
+  kk:{
+    nav_leaders:'Лидерлер',nav_values:'Құндылықтар',nav_join:'Қосылу',
+    hero_badge:'Қазақстан · 2026',hero_sub:'Күш · Бірлік · Мақсат',
+    hero_desc:'Қазақстанның үздік лидерлерін біріктіретін озық қауымдастық',
+    btn_leaders:'Лидерлерді танысу',btn_join:'Қосылу',scroll:'Төмен қараңыз',
+    stat_cities:'Қалалар',stat_leaders:'Лидерлер',stat_unity:'Бірлік',stat_year:'Жыл',
+    founder_label:'Негіздеуші',founder_title:'Қауымдастық лидері',
+    badge1:'Визионер',badge2:'Сенімнің символы',badge3:'Ұйымдастырушы',
+    leaders_label:'Қала лидерлері',leaders_title:'Лидерлерімізді танысыңыз',
+    leaders_desc:'Әр қала мен аймақта BARYS идеяларын алға апарып жүрген тұлғалар',
+    value1:'Ынтымақтастық',value1_desc:'Бір-бірімізге толық сенім және іс-әрекеттегі шынайылық.',
+    value2:'Бірлік',value2_desc:'Барлық лидерлер тең дәрежеде, бір мақсатқа қарай бірге жұмыс істейді.',
+    value3:'Мақсат',value3_desc:'Нақты мақсатқа бағытталған ортақ іс-қимыл және жауапкершілік.',
+    values_label:'Негізі',values_title:'BARYS Құндылықтары',
+    manifesto_label:'Манифест',manifesto_quote:'Нағыз лидер — халқына қызмет ететін адам',
+    steps_label:'Қосылу жолы',steps_title:'Үш қадам',
+    step1_title:'Тіркелу',step1_desc:'Атыңыз бен қалаңызды толтырыңыз',
+    step2_title:'Растау',step2_desc:'WhatsApp тобына қосылыңыз',
+    step3_title:'Белсенді болу',step3_desc:'BARYS қауымдастығымен бірге өсіңіз',
+    join_title:'BARYS-қа қосылыңыз',
+    join_desc:'Лидерлік қозғалысымыздың мүшесі болу мүмкіндігін жіберіп алмаңыз.',
+    input_name:'Аты-жөніңіз',select_city:'Қала таңдаңыз',btn_submit:'Қосылу',
+    success_title:'Құттықтаймыз!',success_desc:'WhatsApp тобына кіру үшін басыңыз:',
+    btn_whatsapp:'WhatsApp-қа өту',
+    footer:'© 2026 BARYS — Барлық құқықтар қорғалған',loading:'Жүктелуде…'
+  },
+  ru:{
+    nav_leaders:'Лидеры',nav_values:'Ценности',nav_join:'Вступить',
+    hero_badge:'Казахстан · 2026',hero_sub:'Сила · Единство · Цель',
+    hero_desc:'Элитное сообщество казахстанских лидеров',
+    btn_leaders:'Познакомиться',btn_join:'Вступить',scroll:'Прокрутите вниз',
+    stat_cities:'Городов',stat_leaders:'Лидеров',stat_unity:'Единство',stat_year:'Год',
+    founder_label:'Основатель',founder_title:'Лидер сообщества',
+    badge1:'Визионер',badge2:'Символ доверия',badge3:'Организатор',
+    leaders_label:'Городские лидеры',leaders_title:'Познакомьтесь с лидерами',
+    leaders_desc:'Те, кто несёт идеи BARYS в каждом регионе страны',
+    value1:'Доверие',value1_desc:'Полное доверие и честность в действиях.',
+    value2:'Единство',value2_desc:'Все лидеры равны и работают вместе с уважением.',
+    value3:'Цель',value3_desc:'Чёткая цель и совместная работа для достижения результата.',
+    values_label:'Основа',values_title:'Ценности BARYS',
+    manifesto_label:'Манифест',manifesto_quote:'Настоящий лидер — тот, кто служит своему народу',
+    steps_label:'Как вступить',steps_title:'Три шага',
+    step1_title:'Регистрация',step1_desc:'Укажите ваше имя и город',
+    step2_title:'Подтверждение',step2_desc:'Вступите в группу WhatsApp',
+    step3_title:'Активность',step3_desc:'Развивайтесь вместе с сообществом BARYS',
+    join_title:'Присоединитесь',
+    join_desc:'Не упустите возможность стать частью нашего движения.',
+    input_name:'Ваше имя',select_city:'Выберите город',btn_submit:'Присоединиться',
+    success_title:'Добро пожаловать!',success_desc:'Нажмите для вступления в WhatsApp:',
+    btn_whatsapp:'WhatsApp',footer:'© 2026 BARYS — Все права защищены',loading:'Загрузка…'
+  },
+  en:{
+    nav_leaders:'Leaders',nav_values:'Values',nav_join:'Join',
+    hero_badge:'Kazakhstan · 2026',hero_sub:'Strength · Unity · Purpose',
+    hero_desc:'Elite community of Kazakhstani leaders',
+    btn_leaders:'Meet leaders',btn_join:'Join us',scroll:'Scroll down',
+    stat_cities:'Cities',stat_leaders:'Leaders',stat_unity:'Unity',stat_year:'Year',
+    founder_label:'Founder',founder_title:'Community Leader',
+    badge1:'Visionary',badge2:'Symbol of Trust',badge3:'Organizer',
+    leaders_label:'City Leaders',leaders_title:'Meet Our Leaders',
+    leaders_desc:'Those who carry the BARYS vision across every region',
+    value1:'Trust',value1_desc:'Complete trust and honesty in all actions.',
+    value2:'Unity',value2_desc:'All leaders are equal and work together respectfully.',
+    value3:'Purpose',value3_desc:'Clear goals and collective action for everyone.',
+    values_label:'Foundation',values_title:'BARYS Values',
+    manifesto_label:'Manifesto',manifesto_quote:'A true leader is one who serves their people',
+    steps_label:'How to Join',steps_title:'Three Steps',
+    step1_title:'Register',step1_desc:'Enter your name and city',
+    step2_title:'Confirm',step2_desc:'Join the WhatsApp group',
+    step3_title:'Be Active',step3_desc:'Grow together with BARYS community',
+    join_title:'Join BARYS',
+    join_desc:"Don't miss the opportunity to become part of our movement.",
+    input_name:'Your name',select_city:'Select city',btn_submit:'Join',
+    success_title:'Welcome!',success_desc:'Click to join the WhatsApp group:',
+    btn_whatsapp:'WhatsApp',footer:'© 2026 BARYS — All rights reserved',loading:'Loading…'
+  },
+  uz:{
+    nav_leaders:'Liderlar',nav_values:'Qadriyatlar',nav_join:"Qo'shilish",
+    hero_badge:"Qozog'iston · 2026",hero_sub:'Kuch · Birlik · Maqsad',
+    hero_desc:"Qozog'iston liderlarining elita hamjamiyati",
+    btn_leaders:'Liderlar bilan tanishing',btn_join:"Qo'shilish",scroll:'Pastga aylantiring',
+    stat_cities:'Shaharlar',stat_leaders:'Liderlar',stat_unity:'Birlik',stat_year:'Yil',
+    founder_label:'Asoschisi',founder_title:'Jamiyat lideri',
+    badge1:'Vizyoner',badge2:'Ishonchning belgisi',badge3:'Tashkilotchi',
+    leaders_label:'Shahar liderlari',leaders_title:'Liderlarimiz bilan tanishing',
+    leaders_desc:"Har bir hududda BARYS g'oyalarini targ'ib etuvchilar",
+    value1:'Ishonch',value1_desc:"Bir-birimizga to'liq ishonch va harakatda halollik.",
+    value2:'Birlik',value2_desc:'Barcha liderlar teng va hurmat bilan birga ishlaydi.',
+    value3:'Maqsad',value3_desc:"Aniq maqsad va birgalikda mas'uliyatli ish.",
+    values_label:'Asosi',values_title:'BARYS Qadriyatlari',
+    manifesto_label:'Manifest',manifesto_quote:"Haqiqiy lider — xalqiga xizmat qiluvchi shaxs",
+    steps_label:"Qo'shilish yo'li",steps_title:'Uch qadam',
+    step1_title:"Ro'yxatdan o'tish",step1_desc:'Ismingiz va shahringizni kiriting',
+    step2_title:'Tasdiqlash',step2_desc:"WhatsApp guruhiga qo'shiling",
+    step3_title:"Faol bo'lish",step3_desc:'BARYS hamjamiyati bilan birga rivojlaning',
+    join_title:"BARYS ga qo'shiling",
+    join_desc:"Liderlik harakatimizning a'zosi bo'lish imkoniyatini boy bermang.",
+    input_name:'Ismingiz',select_city:'Shahar tanlang',btn_submit:"Qo'shilish",
+    success_title:'Xush kelibsiz!',success_desc:'WhatsApp guruhiga kirish uchun bosing:',
+    btn_whatsapp:'WhatsApp',footer:'© 2026 BARYS — Barcha huquqlar himoyalangan',loading:'Yuklanmoqda…'
+  },
+  ky:{
+    nav_leaders:'Лидерлер',nav_values:'Баалуулуктар',nav_join:'Кошулуу',
+    hero_badge:'Казакстан · 2026',hero_sub:'Күч · Биримдик · Максат',
+    hero_desc:'Казакстан лидерлеринин элиталык коомчулугу',
+    btn_leaders:'Лидерлер менен таанышуу',btn_join:'Кошулуу',scroll:'Ылдый сыдырыңыз',
+    stat_cities:'Шаарлар',stat_leaders:'Лидерлер',stat_unity:'Биримдик',stat_year:'Жыл',
+    founder_label:'Уюштуруучу',founder_title:'Коомчулуктун лидери',
+    badge1:'Визионер',badge2:'Ишенимдин белгиси',badge3:'Уюштуруучу',
+    leaders_label:'Шаар лидерлери',leaders_title:'Лидерлерибиз менен таанышыңыз',
+    leaders_desc:'Ар бир аймакта BARYS идеяларын жайылтып жүргөндөр',
+    value1:'Ишеним',value1_desc:'Бири-бирибизге толук ишеним жана иш-аракеттеги чынчылдык.',
+    value2:'Биримдик',value2_desc:'Бардык лидерлер тең жана урмат менен бирге иштешет.',
+    value3:'Максат',value3_desc:'Так максат жана жоопкерчилик менен биргелешкен иш.',
+    values_label:'Негизи',values_title:'BARYS Баалуулуктары',
+    manifesto_label:'Манифест',manifesto_quote:'Чыныгы лидер — элине кызмат кылган адам',
+    steps_label:'Кошулуу жолу',steps_title:'Үч кадам',
+    step1_title:'Катталуу',step1_desc:'Атыңызды жана шааңызды киргизиңиз',
+    step2_title:'Ырастоо',step2_desc:'WhatsApp тобуна кошулуңуз',
+    step3_title:'Активдүү болуу',step3_desc:'BARYS коомчулугу менен бирге өсүңүз',
+    join_title:'BARYS ка кошулуңуз',
+    join_desc:'Лидерлик кыймылыбыздын мүчөсү болуу мүмкүнчүлүгүн жиберип алба.',
+    input_name:'Атыңыз',select_city:'Шаар тандаңыз',btn_submit:'Кошулуу',
+    success_title:'Кош келдиңиз!',success_desc:'WhatsApp тобуна кирүү үчүн басыңыз:',
+    btn_whatsapp:'WhatsApp',footer:'© 2026 BARYS — Бардык укуктар корголгон',loading:'Жүктөлүүдө…'
+  },
+  tr:{
+    nav_leaders:'Liderler',nav_values:'Değerler',nav_join:'Katıl',
+    hero_badge:'Kazakistan · 2026',hero_sub:'Güç · Birlik · Amaç',
+    hero_desc:'Kazakistan liderlerinin seçkin topluluğu',
+    btn_leaders:'Liderlerle tanışın',btn_join:'Katıl',scroll:'Aşağı kaydır',
+    stat_cities:'Şehir',stat_leaders:'Lider',stat_unity:'Birlik',stat_year:'Yıl',
+    founder_label:'Kurucu',founder_title:'Topluluk Lideri',
+    badge1:'Vizyoner',badge2:'Güvenin Sembolü',badge3:'Organizatör',
+    leaders_label:'Şehir Liderleri',leaders_title:'Liderlerimizle tanışın',
+    leaders_desc:'Her bölgede BARYS fikirlerini taşıyan kişiler',
+    value1:'Güven',value1_desc:'Birbirimize tam güven ve eylemlerde dürüstlük.',
+    value2:'Birlik',value2_desc:'Tüm liderler eşit ve saygı içinde birlikte çalışır.',
+    value3:'Amaç',value3_desc:'Net amaç ve herkes için sorumlu ortak çalışma.',
+    values_label:'Temel',values_title:'BARYS Değerleri',
+    manifesto_label:'Manifesto',manifesto_quote:'Gerçek lider — halkına hizmet eden kişidir',
+    steps_label:'Nasıl Katılınır',steps_title:'Üç Adım',
+    step1_title:'Kayıt',step1_desc:'Adınızı ve şehrinizi girin',
+    step2_title:'Onay',step2_desc:'WhatsApp grubuna katılın',
+    step3_title:'Aktif ol',step3_desc:'BARYS topluluğuyla birlikte büyüyün',
+    join_title:"BARYS'a Katılın",
+    join_desc:'Liderlik harekatımızın bir parçası olma fırsatını kaçırmayın.',
+    input_name:'Adınız',select_city:'Şehir seçin',btn_submit:'Katıl',
+    success_title:'Hoş Geldiniz!',success_desc:'WhatsApp grubuna katılmak için tıklayın:',
+    btn_whatsapp:'WhatsApp',footer:'© 2026 BARYS — Tüm hakları saklıdır',loading:'Yükleniyor…'
   }
+};
 
-  async function loadData() {
-    try {
-      const [s, c, l] = await Promise.all([
-        db.from('barys_settings').select('*'),
-        db.from('barys_cities').select('*').order('name'),
-        db.from('barys_leaders').select('*,barys_cities(name)').order('order_num')
-      ]);
-      settings = {}; (s.data||[]).forEach(r=>settings[r.key]=r.value);
-      cities = c.data || [];
-      leaders = l.data || [];
-    } catch(e){ console.warn(e); }
-  }
+/* ═══════════════════════════
+   TICKER
+═══════════════════════════ */
+function buildTicker() {
+  const items = [
+    S.ticker1 || 'BARYS — Күш, Бірлік, Мақсат',
+    S.ticker2 || 'Қазақстан бойынша лидерлер желісі',
+    S.ticker3 || 'Жаңа лидерлер қабылдануда',
+    S.ticker4 || 'Команда. Жеңіс. Мақтаныш.',
+    `${C.length} қала · ${L.length} лидер`
+  ].filter(Boolean);
 
-  // ========== UI ЯЗЫКОВ ==========
-  function buildLangUI() {
-    const wrap = document.getElementById('langWrap');
-    wrap.innerHTML = `
-      <button class="lang-trigger" onclick="toggleLang()">
-        <span class="flag-icon" id="curFlag">${FLAGS[currentLang]}</span>
-        <span id="curCode">${LANGS.find(l=>l.code===currentLang)?.label||'KK'}</span>
-        <span>▼</span>
-      </button>
-      <div class="lang-dropdown" id="langDropdown">
-        ${LANGS.map(l=>`<button class="lang-option ${l.code===currentLang?'active':''}" onclick="setLang('${l.code}')"><span class="flag-icon">${FLAGS[l.code]}</span><span>${l.name}</span><span style="margin-left:auto;opacity:0.6;">${l.label}</span></button>`).join('')}
-      </div>
-    `;
-    const mob = document.getElementById('mobileLang');
-    mob.innerHTML = LANGS.map(l=>`<button class="mobile-lang-btn ${l.code===currentLang?'active':''}" onclick="setLang('${l.code}')">${FLAGS[l.code]} ${l.label}</button>`).join('');
-  }
+  const html = items.map((t,i) => `
+    <span class="ticker-item">
+      <span class="dot"></span>
+      ${t}
+    </span>
+    ${i < items.length-1 ? '<span class="ticker-sep">·</span>' : ''}
+  `).join('');
 
-  window.toggleLang = () => document.getElementById('langDropdown').classList.toggle('open');
-  window.setLang = (code) => {
-    currentLang = code;
-    localStorage.setItem('barys_lang', code);
-    buildLangUI();
-    applyTranslations();
-    renderPublic();
-    document.getElementById('langDropdown').classList.remove('open');
-  };
+  const ti = document.getElementById('tickerInner');
+  ti.innerHTML = html + html; // duplicate for seamless loop
+}
 
-  function applyTranslations() {
-    const t = i18n[currentLang] || i18n.kk;
-    document.querySelectorAll('[data-i18n]').forEach(el=>{ const k=el.getAttribute('data-i18n'); if(t[k]) el.textContent=t[k]; });
-    document.documentElement.lang = currentLang;
-  }
+/* ═══════════════════════════
+   LANG UI
+═══════════════════════════ */
+function buildLangUI() {
+  const drop = document.getElementById('langDrop');
+  drop.innerHTML = LANGS.map(l => `
+    <button class="lang-opt ${l.code===lang?'active':''}" onclick="setLang('${l.code}')">
+      <span class="flag">${FLAGS[l.code]}</span>
+      <span class="lang-nm">${l.name}</span>
+      <span class="lang-cd">${l.label}</span>
+    </button>`).join('');
 
-  // ========== ОТОБРАЖЕНИЕ ==========
-  function renderPublic() {
-    // Hero
-    document.getElementById('heroTitle').innerHTML = (settings.banner_title || 'BAR') + '<em>YS</em>';
-    document.getElementById('heroSub').textContent = settings.banner_subtitle || 'КҮШ. БІРЛІК. ЖЕҢІС.';
-    // Founder
-    document.getElementById('founderName').textContent = settings.founder_name || 'Dias';
-    document.getElementById('founderRole').textContent = settings.founder_role || 'Негізін қалаушы · BARYS';
-    document.getElementById('founderDesc').textContent = settings.founder_desc || 'BARYS — спорт пен бірліктің символы.';
-    const frame = document.getElementById('founderFrame');
-    if (settings.founder_photo) frame.innerHTML = `<img src="${settings.founder_photo}" alt="Founder" onerror="this.parentElement.innerHTML='<div class=\'founder-placeholder\'>📸</div>'">`;
-    // Статистика
-    document.getElementById('statCities').textContent = cities.length;
-    document.getElementById('statLeaders').textContent = leaders.length;
-    // Лидеры
-    const grid = document.getElementById('leadersGrid');
-    if (leaders.length) {
-      grid.innerHTML = leaders.map(l=>`
-        <div class="leader-card">
-          <div class="leader-av">${l.logo_url ? `<img src="${l.logo_url}" onerror="this.outerHTML='${l.name?.charAt(0)||'L'}'">` : (l.name?.charAt(0)||'L')}</div>
-          <div class="leader-nm">${l.name||''}</div>
-          <div class="leader-city">${l.barys_cities?.name||''}</div>
-          ${l.role?`<div style="font-size:0.8rem; color:var(--text2);">${l.role}</div>`:''}
-        </div>`).join('');
-    } else grid.innerHTML = `<p style="grid-column:1/-1; text-align:center;">${i18n[currentLang]?.loading||'Жүктелуде…'}</p>`;
-    // Select городов
-    const sel = document.getElementById('jfCity');
-    sel.innerHTML = `<option value="">— Қала таңдаңыз —</option>` + cities.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  }
+  document.getElementById('mobLangBtns').innerHTML = LANGS.map(l => `
+    <button class="mob-lang-btn ${l.code===lang?'active':''}" onclick="setLang('${l.code}');closeMob()">
+      <span class="flag">${FLAGS[l.code]}</span>${l.label}
+    </button>`).join('');
 
-  function animateStats() {
-    document.querySelectorAll('.stat-num[data-target]').forEach(el=>{
-      const t = parseInt(el.getAttribute('data-target'))||0;
-      let s=0; const d=1500, step=t=>{if(!s)s=t; const p=Math.min((t-s)/d,1); el.textContent=Math.floor(p*t); if(p<1) requestAnimationFrame(step); else el.textContent=t;};
-      requestAnimationFrame(step);
-    });
-  }
+  document.getElementById('curFlag').innerHTML = FLAGS[lang];
+  document.getElementById('curCode').textContent = LANGS.find(l=>l.code===lang)?.label||'KK';
+}
 
-  // ========== ФОРМА РЕГИСТРАЦИИ ==========
-  document.getElementById('joinForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('jfName').value.trim();
-    const cityId = document.getElementById('jfCity').value;
-    if (!name || !cityId) return;
-    const city = cities.find(c=>c.id==cityId);
-    if (!city) return;
-    const link = city.whatsapp_link || '#';
-    localStorage.setItem('barys_registered', JSON.stringify({name, cityId, link}));
-    if (link !== '#') window.open(link, '_blank');
-    showSuccess(link);
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('barys_lang', l);
+  buildLangUI();
+  applyText();
+  renderPublic();
+  document.getElementById('langDrop').classList.remove('open');
+  document.getElementById('langBtn').classList.remove('open');
+}
+
+function toggleLang() {
+  document.getElementById('langDrop').classList.toggle('open');
+  document.getElementById('langBtn').classList.toggle('open');
+}
+
+/* ═══════════════════════════
+   TEXT
+═══════════════════════════ */
+function applyText() {
+  const t = T[lang]||T.kk;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if(t[k]!==undefined) el.textContent = t[k];
   });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const k = el.dataset.i18nPlaceholder;
+    if(t[k]!==undefined) el.placeholder = t[k];
+  });
+  document.documentElement.lang = lang;
+}
 
-  function showSuccess(link) {
-    document.getElementById('joinFormWrap').style.display = 'none';
-    document.getElementById('joinSuccess').style.display = 'block';
-    document.getElementById('waLink').href = link;
+/* ═══════════════════════════
+   MOBILE NAV
+═══════════════════════════ */
+function toggleMob() {
+  document.getElementById('mobNav').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMob() {
+  document.getElementById('mobNav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if(!e.target.closest('.lang-wrap')) {
+    document.getElementById('langDrop').classList.remove('open');
+    document.getElementById('langBtn').classList.remove('open');
+  }
+  if(!e.target.closest('nav') && !e.target.closest('.mob-nav')) closeMob();
+});
+
+/* ═══════════════════════════
+   NAV SCROLL
+═══════════════════════════ */
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ═══════════════════════════
+   REVEAL
+═══════════════════════════ */
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('vis'); });
+}, {threshold:.1});
+document.querySelectorAll('.reveal').forEach(el => revObs.observe(el));
+
+/* ═══════════════════════════
+   COUNTERS
+═══════════════════════════ */
+function runCounters() {
+  if(statsAnimated) return;
+  statsAnimated = true;
+  document.querySelectorAll('.stat-num[data-target]').forEach(el => {
+    const target = +el.dataset.target||0;
+    if(!target) return;
+    let start = null;
+    const dur = 1600;
+    const step = ts => {
+      if(!start) start = ts;
+      const p = Math.min((ts-start)/dur, 1);
+      el.textContent = Math.floor(p * target);
+      if(p<1) requestAnimationFrame(step);
+      else el.textContent = target;
+    };
+    requestAnimationFrame(step);
+  });
+}
+const cntObs = new IntersectionObserver(entries => {
+  if(entries[0].isIntersecting) runCounters();
+}, {threshold:.3});
+const sg = document.querySelector('.stats-grid');
+if(sg) cntObs.observe(sg);
+
+/* ═══════════════════════════
+   FOOTER 20-CLICK TRICK
+═══════════════════════════ */
+let fClicks = 0, fTimer = null;
+const footerLogo = document.getElementById('footerLogo');
+const footerHint = document.getElementById('footerHint');
+
+footerLogo.addEventListener('click', () => {
+  fClicks++;
+  clearTimeout(fTimer);
+  footerLogo.classList.add('clicked');
+  setTimeout(() => footerLogo.classList.remove('clicked'), 150);
+
+  if(fClicks >= 3 && fClicks < 20) {
+    footerHint.textContent = `${fClicks}/20`;
+    footerHint.classList.add('show');
   }
 
-  // ========== СЕКРЕТНЫЙ СБРОС (20 кликов) ==========
-  function handleFooterClick() {
-    footerClickCount++;
-    clearTimeout(footerClickTimer);
-    footerClickTimer = setTimeout(()=> footerClickCount = 0, 1500);
-    if (footerClickCount >= 20) {
-      footerClickCount = 0;
-      localStorage.removeItem('barys_registered');
-      document.getElementById('joinFormWrap').style.display = 'block';
-      document.getElementById('joinSuccess').style.display = 'none';
-      document.getElementById('jfName').value = '';
-      document.getElementById('jfCity').value = '';
-      alert('Регистрация деректері құпия сөзбен жойылды. Қайта тіркеле аласыз.');
-    }
+  fTimer = setTimeout(() => {
+    fClicks = 0;
+    footerHint.classList.remove('show');
+  }, 1500);
+
+  if(fClicks >= 20) {
+    fClicks = 0;
+    footerHint.classList.remove('show');
+    // Reset form
+    localStorage.removeItem('barys_registered');
+    document.getElementById('joinFormWrap').style.display = 'block';
+    document.getElementById('joinSuccess').style.display = 'none';
+    document.getElementById('jfName').value = '';
+    document.getElementById('jfCity').value = '';
+    showToast('Форма қайта орнатылды!');
+    // Open admin
+    openAdmin();
+  }
+});
+
+/* ═══════════════════════════
+   TOAST
+═══════════════════════════ */
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {
+    position:'fixed',bottom:'1.5rem',left:'50%',transform:'translateX(-50%)',
+    background:'var(--card)',border:'1px solid var(--border)',
+    color:'var(--gold)',padding:'.75rem 1.5rem',borderRadius:'10px',
+    fontFamily:"'Rajdhani',sans-serif",fontSize:'.82rem',fontWeight:'700',
+    letterSpacing:'.5px',zIndex:'99999',
+    boxShadow:'0 8px 32px rgba(0,0,0,.4)',
+    transition:'opacity .4s',opacity:'0'
+  });
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.style.opacity = '1');
+  setTimeout(() => {
+    t.style.opacity = '0';
+    setTimeout(() => t.remove(), 400);
+  }, 2500);
+}
+
+/* ═══════════════════════════
+   INIT
+═══════════════════════════ */
+async function init() {
+  lang = localStorage.getItem('barys_lang')||'kk';
+  try {
+    const [sR, cR, lR] = await Promise.all([
+      db.from('barys_settings').select('*'),
+      db.from('barys_cities').select('*').order('name'),
+      db.from('barys_leaders').select('*,barys_cities(name)').order('order_num')
+    ]);
+    S = {};
+    if(sR.data) sR.data.forEach(r => S[r.key]=r.value);
+    C = cR.data||[];
+    L = lR.data||[];
+  } catch(e) {
+    console.warn('DB:', e);
+    C=[]; L=[];
+  }
+  buildLangUI();
+  applyText();
+  renderPublic();
+  buildTicker();
+
+  const stored = localStorage.getItem('barys_registered');
+  if(stored) {
+    try { const {link}=JSON.parse(stored); if(link) showSuccess(link); } catch(e){}
+  }
+}
+
+/* ═══════════════════════════
+   RENDER PUBLIC
+═══════════════════════════ */
+function renderPublic() {
+  const t = T[lang]||T.kk;
+
+  // Founder
+  document.getElementById('founderName').textContent = S.founder_name||'BARYS Лидері';
+  document.getElementById('founderRole').textContent = S.founder_role||'Негіздеуші · BARYS';
+  document.getElementById('founderDesc').textContent = S.founder_desc||'';
+
+  const frame = document.getElementById('founderFrame');
+  if(S.founder_photo?.trim()) {
+    frame.innerHTML = `
+      <img src="${S.founder_photo}" alt="Founder"
+        onerror="this.parentElement.innerHTML='<div class=founder-placeholder><svg viewBox=\\'0 0 24 24\\'><circle cx=\\'12\\' cy=\\'8\\' r=\\'4\\'/><path d=\\'M20 21a8 8 0 10-16 0\\'/></svg></div>'"/>`;
   }
 
-  // ========== АДМИНКА ==========
-  window.openAdmin = () => { document.getElementById('adm').classList.add('on'); if(adminAuthed) showAdminMain(); };
-  window.closeAdmin = () => document.getElementById('adm').classList.remove('on');
-  function showAdminMain() {
-    document.getElementById('admLogin').style.display = 'none';
-    document.getElementById('admMain').style.display = 'flex';
-    syncAdminData();
+  // Stats
+  const nc = C.length, nl = L.length;
+  document.getElementById('statCities').setAttribute('data-target', nc);
+  document.getElementById('statLeaders').setAttribute('data-target', nl);
+  if(!statsAnimated) {
+    document.getElementById('statCities').textContent = nc;
+    document.getElementById('statLeaders').textContent = nl;
   }
-  window.admLogin = () => {
-    const p = document.getElementById('admPass').value;
-    if (p === (settings.admin_password || 'barys2024')) {
-      adminAuthed = true; localStorage.setItem('barys_admin','1');
-      showAdminMain();
-    } else document.getElementById('admErr').textContent = 'Қате пароль';
+
+  // Leaders
+  const grid = document.getElementById('leadersGrid');
+  if(L.length) {
+    grid.innerHTML = L.map(l => {
+      const init = l.name ? l.name.split(' ').map(w=>w[0]).join('').slice(0,2) : 'L';
+      const av = l.logo_url
+        ? `<img src="${l.logo_url}" alt="${l.name}" onerror="this.outerHTML='${init}'">`
+        : init;
+      return `<div class="leader-card">
+        <div class="leader-av">${av}</div>
+        <div class="leader-nm">${l.name||''}</div>
+        <div class="leader-city">${l.barys_cities?.name||''}</div>
+        ${l.role?`<div class="leader-role">${l.role}</div>`:''}
+      </div>`;
+    }).join('');
+  } else {
+    grid.innerHTML = `<div class="leaders-empty">${t.loading}</div>`;
+  }
+
+  // City selector
+  const sel = document.getElementById('jfCity');
+  sel.innerHTML = `<option value="">— ${t.select_city} —</option>` +
+    C.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+}
+
+/* ═══════════════════════════
+   JOIN FORM
+═══════════════════════════ */
+document.getElementById('joinForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('jfName').value.trim();
+  const cityId = document.getElementById('jfCity').value;
+  if(!name||!cityId) return;
+  const city = C.find(c => String(c.id)===String(cityId));
+  if(!city) return;
+  const link = city.whatsapp_link||'#';
+  localStorage.setItem('barys_registered', JSON.stringify({name, cityId, link}));
+  if(link!=='#') window.open(link,'_blank');
+  showSuccess(link);
+});
+
+function showSuccess(link) {
+  document.getElementById('joinFormWrap').style.display = 'none';
+  document.getElementById('joinSuccess').style.display = 'block';
+  document.getElementById('waLink').href = link||'#';
+}
+
+/* ═══════════════════════════
+   ADMIN
+═══════════════════════════ */
+function openAdmin() {
+  document.getElementById('adm').classList.add('on');
+  if(adminAuthed) showAdminMain();
+  else {
+    document.getElementById('admLogin').style.display = 'flex';
+    document.getElementById('admContent').style.display = 'none';
+    setTimeout(()=>document.getElementById('admPass').focus(), 100);
+  }
+}
+
+function showAdminMain() {
+  document.getElementById('admLogin').style.display = 'none';
+  const ac = document.getElementById('admContent');
+  ac.style.display = 'flex';
+  ac.classList.add('adm-layout'); // ensure layout class
+  syncAdminData();
+}
+
+function closeAdmin() {
+  document.getElementById('adm').classList.remove('on');
+}
+
+function admLogin() {
+  const pass = document.getElementById('admPass').value;
+  const correct = S.admin_password||'barys2024';
+  if(pass===correct) {
+    adminAuthed = true;
+    localStorage.setItem('barys_admin','1');
+    document.getElementById('admPass').value = '';
+    document.getElementById('admErr').textContent = '';
+    showAdminMain();
+  } else {
+    document.getElementById('admErr').textContent = '✕ Пароль қате — қайталап көріңіз';
+    document.getElementById('admPass').value = '';
+    document.getElementById('admPass').focus();
+  }
+}
+
+function swTab(name, el) {
+  document.querySelectorAll('.adm-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.adm-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+/* Photo preview in settings */
+function updatePhotoPreview(url) {
+  const thumb = document.getElementById('photoThumb');
+  if(url&&url.trim()) {
+    thumb.innerHTML = `<img src="${url}" alt="Preview" onerror="this.outerHTML='<div class=photo-thumb-placeholder>Жаңылыс</div>'"/>`;
+  } else {
+    thumb.innerHTML = '<div class="photo-thumb-placeholder">Фото жоқ</div>';
+  }
+}
+
+function syncAdminData() {
+  // Settings
+  const fi = id => document.getElementById(id);
+  fi('sFname').value  = S.founder_name||'';
+  fi('sFrole').value  = S.founder_role||'';
+  fi('sFdesc').value  = S.founder_desc||'';
+  fi('sFphoto').value = S.founder_photo||'';
+  fi('sTicker1').value= S.ticker1||'';
+  fi('sTicker2').value= S.ticker2||'';
+  fi('sTicker3').value= S.ticker3||'';
+  fi('sTicker4').value= S.ticker4||'';
+  updatePhotoPreview(S.founder_photo||'');
+
+  // Photo preview live
+  fi('sFphoto').oninput = e => updatePhotoPreview(e.target.value);
+
+  // Leaders table
+  fi('leadersTableBody').innerHTML = L.map(l => `
+    <tr>
+      <td>${l.name||''}</td>
+      <td>${l.barys_cities?.name||'—'}</td>
+      <td>${l.role||'—'}</td>
+      <td><div class="adm-actions">
+        <button class="adm-btn-sm adm-edit" onclick="editLeader(${l.id})">Өңдеу</button>
+        <button class="adm-btn-sm adm-del"  onclick="delLeader(${l.id})">Өшіру</button>
+      </div></td>
+    </tr>`).join('');
+
+  // Cities table
+  fi('citiesTableBody').innerHTML = C.map(c => `
+    <tr>
+      <td>${c.name}</td>
+      <td><small style="opacity:.65;">${(c.whatsapp_link||'').substring(0,40)}${(c.whatsapp_link||'').length>40?'…':''}</small></td>
+      <td><div class="adm-actions">
+        <button class="adm-btn-sm adm-edit" onclick="editCity(${c.id})">Өңдеу</button>
+        <button class="adm-btn-sm adm-del"  onclick="delCity(${c.id})">Өшіру</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+async function saveSettings() {
+  const fi = id => document.getElementById(id).value;
+  const pass1 = fi('sPass'), pass2 = fi('sPass2');
+
+  if(pass1 && pass1!==pass2) {
+    const msg = document.getElementById('sMsg');
+    msg.style.color='var(--danger)';
+    msg.textContent='✕ Парольдер сәйкес келмейді';
+    setTimeout(()=>{msg.textContent='';msg.style.color='';},3000);
+    return;
+  }
+
+  const pairs = [
+    ['founder_name', fi('sFname')],
+    ['founder_role', fi('sFrole')],
+    ['founder_desc', fi('sFdesc')],
+    ['founder_photo', fi('sFphoto')],
+    ['ticker1', fi('sTicker1')],
+    ['ticker2', fi('sTicker2')],
+    ['ticker3', fi('sTicker3')],
+    ['ticker4', fi('sTicker4')],
+  ];
+  if(pass1) pairs.push(['admin_password', pass1]);
+
+  for(const [k,v] of pairs) {
+    await db.from('barys_settings').upsert({key:k,value:v},{onConflict:'key'});
+  }
+  document.getElementById('sPass').value='';
+  document.getElementById('sPass2').value='';
+  await init();
+  syncAdminData();
+  const msg = document.getElementById('sMsg');
+  msg.style.color='';
+  msg.textContent='✓ Сәтті сақталды!';
+  setTimeout(()=>msg.textContent='',3000);
+}
+
+/* Leader modal */
+function openLeaderModal() {
+  document.getElementById('leaderModalTitle').textContent='Лидер қосу';
+  document.getElementById('lmId').value='';
+  document.getElementById('lmName').value='';
+  document.getElementById('lmRole').value='';
+  document.getElementById('lmPhoto').value='';
+  document.getElementById('lmCity').innerHTML=
+    '<option value="">— Қала таңдаңыз —</option>'+
+    C.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  document.getElementById('leaderModal').classList.add('on');
+}
+
+function editLeader(id) {
+  const l=L.find(x=>x.id===id);if(!l)return;
+  document.getElementById('leaderModalTitle').textContent='Лидерді өңдеу';
+  document.getElementById('lmId').value=id;
+  document.getElementById('lmName').value=l.name||'';
+  document.getElementById('lmRole').value=l.role||'';
+  document.getElementById('lmPhoto').value=l.logo_url||'';
+  document.getElementById('lmCity').innerHTML=
+    '<option value="">— Қала таңдаңыз —</option>'+
+    C.map(c=>`<option value="${c.id}" ${l.city_id===c.id?'selected':''}>${c.name}</option>`).join('');
+  document.getElementById('leaderModal').classList.add('on');
+}
+
+async function saveLeader() {
+  const id=document.getElementById('lmId').value;
+  const name=document.getElementById('lmName').value.trim();
+  if(!name) return;
+  const data={
+    name,
+    role:document.getElementById('lmRole').value.trim(),
+    city_id:document.getElementById('lmCity').value||null,
+    logo_url:document.getElementById('lmPhoto').value.trim()||null
   };
-  function syncAdminData() {
-    document.getElementById('sTitle').value = settings.banner_title || '';
-    document.getElementById('sSubtitle').value = settings.banner_subtitle || '';
-    document.getElementById('sFname').value = settings.founder_name || '';
-    document.getElementById('sFrole').value = settings.founder_role || '';
-    document.getElementById('sFdesc').value = settings.founder_desc || '';
-    document.getElementById('sFphoto').value = settings.founder_photo || '';
-    // Таблицы
-    document.getElementById('leadersTableBody').innerHTML = leaders.map(l=>`<tr><td>${l.name}</td><td>${l.barys_cities?.name||'—'}</td><td>${l.role||'—'}</td><td><button class="adm-btn-sm adm-edit" onclick="editLeader(${l.id})">Өңдеу</button> <button class="adm-btn-sm adm-del" onclick="delLeader(${l.id})">Өшіру</button></td></tr>`).join('');
-    document.getElementById('citiesTableBody').innerHTML = cities.map(c=>`<tr><td>${c.name}</td><td>${c.whatsapp_link||''}</td><td><button class="adm-btn-sm adm-edit" onclick="editCity(${c.id})">Өңдеу</button> <button class="adm-btn-sm adm-del" onclick="delCity(${c.id})">Өшіру</button></td></tr>`).join('');
-    // select в модалке лидера
-    const sel = document.getElementById('lmCity');
-    sel.innerHTML = '<option value="">— Қала —</option>'+cities.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
-  }
-  window.switchAdmTab = (tab, el) => {
-    document.querySelectorAll('.adm-nav-item').forEach(i=>i.classList.remove('active'));
-    el.classList.add('active');
-    document.querySelectorAll('.adm-panel').forEach(p=>p.classList.remove('active'));
-    document.getElementById('tab-'+tab).classList.add('active');
-  };
-  window.saveSettings = async () => {
-    const pairs = [
-      ['banner_title', document.getElementById('sTitle').value],
-      ['banner_subtitle', document.getElementById('sSubtitle').value],
-      ['founder_name', document.getElementById('sFname').value],
-      ['founder_role', document.getElementById('sFrole').value],
-      ['founder_desc', document.getElementById('sFdesc').value],
-      ['founder_photo', document.getElementById('sFphoto').value]
-    ];
-    const np = document.getElementById('sPass').value;
-    if (np) pairs.push(['admin_password', np]);
-    for (let [k,v] of pairs) await db.from('barys_settings').upsert({key:k,value:v},{onConflict:'key'});
-    document.getElementById('sPass').value = '';
-    await loadData(); renderPublic(); syncAdminData();
-    document.getElementById('sMsg').textContent = '✓ Сақталды!'; setTimeout(()=>document.getElementById('sMsg').textContent='',2000);
-  };
+  if(id) await db.from('barys_leaders').update(data).eq('id',id);
+  else await db.from('barys_leaders').insert(data);
+  closeModal('leaderModal');
+  await init();syncAdminData();
+}
 
-  // CRUD лидеров/городов (аналогично)
-  window.openLeaderModal = () => { /* ... */ };
-  window.editLeader = (id) => { /* ... */ };
-  window.saveLeader = async () => { /* ... */ };
-  window.delLeader = async (id) => { /* ... */ };
-  window.openCityModal = () => { /* ... */ };
-  window.editCity = (id) => { /* ... */ };
-  window.saveCity = async () => { /* ... */ };
-  window.delCity = async (id) => { /* ... */ };
-  window.closeModal = (id) => document.getElementById(id).style.display='none';
+async function delLeader(id) {
+  if(!confirm('Лидерді жоясыз ба?')) return;
+  await db.from('barys_leaders').delete().eq('id',id);
+  await init();syncAdminData();
+}
 
-  // Мобильное меню
-  document.getElementById('hamburger').onclick = () => document.getElementById('mobileNav').classList.toggle('open');
+/* City modal */
+function openCityModal() {
+  document.getElementById('cityModalTitle').textContent='Қала қосу';
+  document.getElementById('cmId').value='';
+  document.getElementById('cmName').value='';
+  document.getElementById('cmWa').value='';
+  document.getElementById('cityModal').classList.add('on');
+}
 
-  // Запуск
-  init();
+function editCity(id) {
+  const c=C.find(x=>x.id===id);if(!c)return;
+  document.getElementById('cityModalTitle').textContent='Қаланы өңдеу';
+  document.getElementById('cmId').value=id;
+  document.getElementById('cmName').value=c.name||'';
+  document.getElementById('cmWa').value=c.whatsapp_link||'';
+  document.getElementById('cityModal').classList.add('on');
+}
+
+async function saveCity() {
+  const id=document.getElementById('cmId').value;
+  const name=document.getElementById('cmName').value.trim();
+  if(!name) return;
+  const data={name,whatsapp_link:document.getElementById('cmWa').value.trim()||null};
+  if(id) await db.from('barys_cities').update(data).eq('id',id);
+  else await db.from('barys_cities').insert(data);
+  closeModal('cityModal');
+  await init();syncAdminData();
+}
+
+async function delCity(id) {
+  if(!confirm('Қаланы және оның лидерлерін жоясыз ба?')) return;
+  await db.from('barys_leaders').update({city_id:null}).eq('city_id',id);
+  await db.from('barys_cities').delete().eq('id',id);
+  await init();syncAdminData();
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('on');
+}
+
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if(e.target===bg) bg.classList.remove('on'); });
+});
+
+/* ═══════════════════════════
+   START
+═══════════════════════════ */
+init();
 </script>
 </body>
 </html>
