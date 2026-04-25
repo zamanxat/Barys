@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>BARYS — Лидерлер қауымдастығы</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ══════════════════════════════════
@@ -30,6 +30,9 @@
   --danger:   #EF4444;
   --radius:   14px;
   --nav-h:    66px;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-ui:'Rajdhani',sans-serif;
+  --font-body:'Manrope','Nunito',system-ui,sans-serif;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -38,11 +41,13 @@ html{scroll-behavior:smooth;font-size:16px;}
 body {
   background:var(--bg);
   color:var(--text);
-  font-family:'Nunito',sans-serif;
+  font-family:var(--font-body);
+  font-feature-settings:"kern" 1;
   overflow-x:hidden;
-  line-height:1.6;
+  line-height:1.65;
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
 }
 
 /* ── Noise overlay ── */
@@ -139,7 +144,6 @@ nav.scrolled {
   font-size:1.5rem;color:var(--bg);letter-spacing:1px;
 }
 
-.logo-words {}
 .logo-title {
   font-family:'Bebas Neue',sans-serif;
   font-size:1.55rem;color:var(--gold);letter-spacing:4px;
@@ -214,7 +218,7 @@ nav.scrolled {
   display:flex;align-items:center;gap:.7rem;
   padding:.7rem 1rem;background:none;border:none;
   color:var(--text2);cursor:pointer;
-  font-family:'Nunito',sans-serif;font-size:.82rem;font-weight:600;
+  font-family:var(--font-body);font-size:.82rem;font-weight:600;
   text-align:left;width:100%;
   transition:all .2s;border-left:2.5px solid transparent;
 }
@@ -353,13 +357,14 @@ nav.scrolled {
 .hero-badge-dot{width:7px;height:7px;background:var(--blue2);border-radius:50%;box-shadow:0 0 8px var(--blue);}
 
 .hero-title {
-  font-family:'Bebas Neue',sans-serif;
+  font-family:var(--font-display);
   font-size:clamp(5rem,16vw,11rem);
   color:var(--white);
-  letter-spacing:6px;
+  letter-spacing:clamp(3px,.6vw,8px);
   line-height:.9;
   margin-bottom:1.2rem;
   animation:fadeUp .9s .1s ease both;
+  text-shadow:0 10px 35px rgba(0,0,0,.4);
 }
 
 .hero-title .gold-stroke {
@@ -411,11 +416,11 @@ nav.scrolled {
   display:inline-flex;align-items:center;gap:.6rem;
   background:linear-gradient(135deg,var(--gold),var(--gold-dim));
   color:var(--bg);padding:.88rem 2.2rem;
-  font-family:'Rajdhani',sans-serif;font-size:.88rem;font-weight:700;
+  font-family:var(--font-ui);font-size:.9rem;font-weight:700;
   letter-spacing:1.5px;text-transform:uppercase;
   border:none;border-radius:10px;cursor:pointer;
   text-decoration:none;
-  transition:all .3s cubic-bezier(.4,0,.2,1);
+  transition:transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s cubic-bezier(.4,0,.2,1), filter .25s ease;
   box-shadow:0 6px 24px rgba(212,168,67,.22);
 }
 .btn-gold:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(212,168,67,.32);filter:brightness(1.08);}
@@ -483,8 +488,8 @@ section{padding:5.5rem 1.5rem;}
 .section-desc{color:var(--text2);font-size:.92rem;max-width:560px;line-height:1.78;}
 
 /* Reveal */
-.reveal{opacity:0;transform:translateY(32px);transition:opacity .8s ease,transform .8s ease;}
-.reveal.vis{opacity:1;transform:translateY(0);}
+.reveal{opacity:0;transform:translateY(28px);filter:blur(3px);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1),filter .75s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);filter:blur(0);}
 .reveal.vis-delay-1{transition-delay:.1s;}
 .reveal.vis-delay-2{transition-delay:.2s;}
 
@@ -678,10 +683,13 @@ section{padding:5.5rem 1.5rem;}
 ══════════════════════════════════ */
 .values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
 
+a:focus-visible,button:focus-visible,.lang-btn:focus-visible,.hamburger:focus-visible{
+  outline:2px solid var(--gold);outline-offset:3px;
+}
 .value-card{
   background:var(--card);border:1px solid var(--border2);
   border-radius:14px;padding:2.2rem 2rem;
-  position:relative;overflow:hidden;transition:all .35s;
+  position:relative;overflow:hidden;transition:transform .4s cubic-bezier(.22,1,.36,1),box-shadow .4s,border-color .3s,background .3s;
 }
 .value-card::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
@@ -770,7 +778,7 @@ section{padding:5.5rem 1.5rem;}
   background:rgba(255,255,255,.04);
   border:1px solid var(--border2);
   color:var(--white);border-radius:10px;
-  font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:500;
+  font-family:var(--font-body);font-size:.9rem;font-weight:500;
   transition:all .25s;width:100%;
   -webkit-appearance:none;appearance:none;
 }
@@ -834,69 +842,188 @@ footer::before{
 /* ══════════════════════════════════
    ADMIN PANEL
 ══════════════════════════════════ */
-#adm{position:fixed;inset:0;background:var(--bg);z-index:9999;display:none;flex-direction:column;}
+#adm{
+  position:fixed;inset:0;
+  min-height:100dvh;
+  min-height:-webkit-fill-available;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(10,92,240,.12), transparent 55%),
+    radial-gradient(circle at 12% 18%, rgba(10,92,240,.08), transparent 36%),
+    radial-gradient(circle at 92% 0%, rgba(212,168,67,.1), transparent 32%),
+    var(--bg);
+  z-index:9999;display:none;flex-direction:column;
+  animation:admFade .35s ease;
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  box-sizing:border-box;
+}
 #adm.on{display:flex;}
+@media(max-width:768px){
+  #adm.on{overscroll-behavior:contain;}
+}
+@keyframes admFade{from{opacity:0}to{opacity:1}}
 
 .adm-topbar{
-  height:60px;background:rgba(5,8,15,.97);
+  min-height:64px;height:auto;
+  background:linear-gradient(180deg,rgba(12,18,32,.95) 0%,rgba(5,8,15,.88) 100%);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
   border-bottom:1px solid var(--border);
+  box-shadow:0 4px 24px rgba(0,0,0,.35);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 1.5rem;flex-shrink:0;gap:1rem;
+  flex-wrap:wrap;
+  padding:0.55rem 1.25rem;flex-shrink:0;gap:0.65rem 0.9rem;
+  position:sticky;top:0;z-index:5;
+}
+.adm-topbar::after{
+  content:'';position:absolute;left:0;right:0;bottom:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,168,67,.35),transparent);
+  pointer-events:none;
 }
 .adm-topbar-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.2rem;color:var(--gold);letter-spacing:3px;
+  font-family:var(--font-display);
+  font-size:1.25rem;color:var(--gold);letter-spacing:3px;
   white-space:nowrap;
+  text-shadow:0 0 20px rgba(212,168,67,.25);
 }
+.adm-topbar-sub{
+  font-size:.65rem;font-family:var(--font-ui);color:var(--text2);
+  letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  display:block;margin-top:2px;opacity:.85;
+}
+.adm-topbar-left,.adm-topbar-right{display:flex;align-items:center;gap:1rem;}
+.adm-topbar-left{flex-wrap:wrap;flex:1;min-width:0;}
+.adm-topbar-stats{
+  display:flex;align-items:center;gap:.45rem;flex-wrap:nowrap;
+  flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;padding-bottom:2px;
+}
+.adm-topbar-stats::-webkit-scrollbar{display:none;}
+.adm-chip{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.4rem .7rem;border-radius:999px;
+  border:1px solid rgba(212,168,67,.2);
+  background:linear-gradient(145deg,rgba(255,255,255,.04),rgba(10,92,240,.04));
+  color:var(--text);font-size:.68rem;font-weight:700;
+  font-family:var(--font-ui);letter-spacing:.45px;text-transform:uppercase;
+  transition:transform .2s,box-shadow .2s;
+}
+.adm-chip:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.2);}
+.adm-chip b{color:var(--gold);font-weight:700;}
 .adm-close{
-  background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.22);
-  color:var(--gold);padding:.45rem 1rem;border-radius:8px;cursor:pointer;
-  font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;
-  letter-spacing:.5px;text-transform:uppercase;transition:all .2s;
-  white-space:nowrap;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(212,168,67,.12),rgba(212,168,67,.04));
+  border:1px solid rgba(212,168,67,.3);
+  color:var(--gold);padding:.5rem 1.1rem;border-radius:10px;cursor:pointer;
+  font-family:var(--font-ui);font-size:.72rem;font-weight:700;
+  letter-spacing:.6px;text-transform:uppercase;transition:all .25s;
+  white-space:nowrap;flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.2);
+  min-height:44px;touch-action:manipulation;
 }
-.adm-close:hover{background:rgba(212,168,67,.18);}
+.adm-close:hover{
+  background:rgba(212,168,67,.2);
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(212,168,67,.12);
+}
 
-.adm-layout{display:flex;flex:1;overflow:hidden;}
+.adm-layout{
+  display:flex;flex:1;overflow:hidden;min-height:0;
+  position:relative;
+}
+.adm-inner-layout{
+  display:none;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+  flex-direction:row;
+  align-items:stretch;
+}
+.adm-inner-layout .adm-main{min-height:0;}
 
 /* Sidebar */
 .adm-sidebar{
-  width:210px;flex-shrink:0;
-  background:var(--card);border-right:1px solid var(--border);
-  padding:1rem .7rem;display:flex;flex-direction:column;gap:.35rem;
+  width:232px;flex-shrink:0;
+  background:linear-gradient(180deg,rgba(17,24,40,.98),rgba(8,13,26,.95));
+  border-right:1px solid var(--border);
+  padding:1.1rem .85rem 1.5rem;display:flex;flex-direction:column;gap:.5rem;
   overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.adm-side-brand{
+  padding:.5rem .75rem 1.1rem;margin-bottom:.3rem;
+  border-bottom:1px solid var(--border2);
+  font-size:.62rem;font-family:var(--font-ui);color:var(--text2);
+  letter-spacing:2.5px;text-transform:uppercase;font-weight:700;
 }
 
 .adm-nav-item{
-  display:flex;align-items:center;gap:.65rem;
-  padding:.72rem .9rem;color:var(--text2);cursor:pointer;
-  border-radius:9px;font-family:'Nunito',sans-serif;
-  font-size:.82rem;font-weight:600;
-  transition:all .2s;border-left:2.5px solid transparent;
+  display:flex;align-items:center;gap:.7rem;
+  padding:.78rem 1rem;color:var(--text2);cursor:pointer;
+  border-radius:10px;font-family:var(--font-body);
+  font-size:.84rem;font-weight:600;
+  transition:color .2s,background .2s,transform .2s,box-shadow .2s,border-color .2s;
+  border-left:3px solid transparent;
   white-space:nowrap;
+  touch-action:manipulation;min-height:44px;
 }
-.adm-nav-item svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;}
-.adm-nav-item:hover{color:var(--gold);background:rgba(212,168,67,.05);}
-.adm-nav-item.active{color:var(--gold);background:rgba(212,168,67,.08);border-left-color:var(--gold);}
+.adm-nav-item svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0;}
+@media(hover:hover){
+  .adm-nav-item:hover{color:var(--gold);background:rgba(212,168,67,.07);transform:translateX(2px);}
+}
+.adm-nav-item.active{
+  color:var(--gold);
+  background:linear-gradient(90deg,rgba(212,168,67,.12),rgba(10,92,240,.04));
+  border-left-color:var(--gold);
+  box-shadow:0 4px 20px rgba(0,0,0,.22),inset 0 0 0 1px rgba(212,168,67,.1);
+}
 
 /* Main */
-.adm-main{flex:1;overflow-y:auto;padding:2rem;min-width:0;}
-.adm-panel{display:none;}
+.adm-main{
+  flex:1;overflow-y:auto;padding:2rem 2.25rem 2.5rem;min-width:0;min-height:0;
+  -webkit-overflow-scrolling:touch;
+  background:radial-gradient(ellipse 100% 80% at 100% 0%,rgba(10,92,240,.04),transparent 50%);
+}
+.adm-panel{display:none;animation:panelIn .35s ease;}
 .adm-panel.active{display:block;}
+@keyframes panelIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.adm-h2{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--white);letter-spacing:2px;margin-bottom:1.5rem;}
+.adm-h2{
+  font-family:var(--font-display);font-size:1.75rem;color:var(--white);
+  letter-spacing:2px;margin-bottom:1.6rem;
+  padding-bottom:.75rem;border-bottom:1px solid var(--border2);
+  display:flex;align-items:center;gap:.75rem;
+}
+.adm-h2::before{
+  content:'';width:4px;height:1.1em;border-radius:2px;
+  background:linear-gradient(180deg,var(--gold),var(--blue2));
+  flex-shrink:0;
+}
 
 /* Settings sections */
 .settings-section{
-  background:var(--card);border:1px solid var(--border2);
-  border-radius:12px;padding:1.5rem;margin-bottom:1.2rem;
+  background:linear-gradient(165deg,rgba(12,18,36,.6),var(--card));
+  border:1px solid var(--border2);
+  border-radius:14px;padding:1.5rem 1.6rem;margin-bottom:1.25rem;
+  transition:border-color .3s,transform .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,.12);
+}
+.settings-section::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(212,168,67,.45),var(--blue2),transparent);
+  opacity:.75;
+}
+@media(hover:hover){
+  .settings-section:hover{
+    border-color:rgba(212,168,67,.2);
+    transform:translateY(-2px);
+    box-shadow:0 12px 40px rgba(0,0,0,.2);
+  }
 }
 .settings-section-title{
-  font-family:'Rajdhani',sans-serif;font-size:.75rem;font-weight:700;
-  color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;
-  margin-bottom:1.2rem;padding-bottom:.7rem;
+  font-family:var(--font-ui);font-size:.72rem;font-weight:700;
+  color:var(--gold);text-transform:uppercase;letter-spacing:1.6px;
+  margin-bottom:1.2rem;padding-bottom:.75rem;
   border-bottom:1px solid var(--border2);
-  display:flex;align-items:center;gap:.5rem;
+  display:flex;align-items:center;gap:.55rem;
 }
 .settings-section-title svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5;}
 
@@ -910,16 +1037,18 @@ footer::before{
 .adm-label{font-family:'Rajdhani',sans-serif;font-size:.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;font-weight:700;}
 
 .adm-input{
-  padding:.7rem .9rem;
-  background:var(--bg2);border:1px solid var(--border2);
-  color:var(--text);border-radius:8px;
-  font-family:'Nunito',sans-serif;font-size:.85rem;
-  transition:border-color .2s;width:100%;
+  padding:.75rem 1rem;
+  background:rgba(5,8,15,.5);border:1px solid var(--border2);
+  color:var(--text);border-radius:10px;
+  font-family:var(--font-body);font-size:.86rem;
+  transition:border-color .2s,box-shadow .2s,background .2s;width:100%;
 }
-.adm-input:focus{outline:none;border-color:rgba(212,168,67,.35);box-shadow:0 0 0 2px rgba(212,168,67,.06);}
+.adm-input:focus{outline:none;border-color:rgba(212,168,67,.4);box-shadow:0 0 0 3px rgba(212,168,67,.08);background:rgba(8,13,26,.7);}
+.adm-input::placeholder{color:var(--text2);opacity:.75;}
 textarea.adm-input{resize:vertical;min-height:90px;}
 
 .adm-btns-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding-top:.5rem;}
+.adm-btns-row .btn-gold{touch-action:manipulation;min-height:46px;}
 .adm-msg{font-family:'Nunito',sans-serif;font-size:.8rem;color:var(--success);font-weight:700;display:inline-block;}
 
 /* Photo preview */
@@ -937,40 +1066,126 @@ textarea.adm-input{resize:vertical;min-height:90px;}
 .photo-thumb-placeholder{color:var(--text2);font-size:.7rem;text-align:center;padding:.5rem;}
 
 /* Table */
-.adm-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.adm-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border-radius:10px;overflow:hidden;margin-top:1rem;min-width:500px;}
-.adm-table th{background:var(--card2);padding:.75rem 1rem;text-align:left;font-family:'Rajdhani',sans-serif;font-size:.66rem;color:var(--gold);text-transform:uppercase;letter-spacing:1px;font-weight:700;border-bottom:1px solid var(--border);}
-.adm-table td{padding:.72rem 1rem;border-bottom:1px solid var(--border2);color:var(--text2);vertical-align:middle;}
+.adm-table-wrap{
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin:0 -0.25rem;
+  padding:0 0.25rem 0.5rem;
+  overscroll-behavior-x:contain;
+}
+.adm-table{width:100%;border-collapse:collapse;font-size:.82rem;background:var(--card);border-radius:10px;overflow:hidden;margin-top:1rem;min-width:520px;table-layout:auto;}
+.adm-table th{
+  background:linear-gradient(180deg,rgba(17,24,40,.95),var(--card2));
+  padding:.8rem 1.05rem;text-align:left;font-family:var(--font-ui);
+  font-size:.64rem;color:var(--gold);text-transform:uppercase;
+  letter-spacing:1.1px;font-weight:700;border-bottom:1px solid var(--border);
+}
+.adm-table td{
+  padding:.78rem 1.05rem;border-bottom:1px solid var(--border2);
+  color:var(--text2);vertical-align:middle;transition:background .2s;
+  word-wrap:break-word;overflow-wrap:break-word;hyphens:auto;
+}
+.adm-table td small{display:block;word-break:break-all;}
 .adm-table tr:last-child td{border-bottom:none;}
-.adm-table tr:hover td{background:rgba(255,255,255,.02);}
+.adm-table tbody tr:nth-child(even) td{background:rgba(255,255,255,.015);}
+.adm-table tr:hover td{background:rgba(212,168,67,.04);}
 
 .adm-actions{display:flex;gap:.4rem;flex-wrap:wrap;}
-.adm-btn-sm{padding:.38rem .75rem;font-size:.65rem;border-radius:6px;border:none;cursor:pointer;font-weight:700;font-family:'Rajdhani',sans-serif;transition:all .2s;letter-spacing:.3px;text-transform:uppercase;}
+.adm-btn-sm{
+  padding:.5rem .8rem;min-height:40px;min-width:2.5rem;
+  font-size:.65rem;border-radius:8px;border:none;cursor:pointer;
+  font-weight:700;font-family:var(--font-ui);transition:all .2s;letter-spacing:.3px;
+  text-transform:uppercase;touch-action:manipulation;
+}
 .adm-edit{background:rgba(10,92,240,.18);color:#6b9bff;border:1px solid rgba(10,92,240,.28);}
 .adm-del{background:rgba(239,68,68,.14);color:#f87171;border:1px solid rgba(239,68,68,.24);}
 .adm-btn-sm:hover{transform:translateY(-1px);opacity:.9;}
 
 /* Login */
 .adm-login-wrap{
-  position:absolute;inset:0;background:var(--bg);
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 20%,rgba(10,92,240,.1),transparent),
+    radial-gradient(circle at 80% 80%,rgba(212,168,67,.08),transparent 40%),
+    var(--bg);
   display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:1rem;z-index:10;padding:1.5rem;
+  flex-direction:column;gap:1rem;z-index:10;padding:1rem max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 .adm-login-card{
-  background:var(--card);border:1px solid var(--border);
-  border-radius:16px;padding:2.5rem;width:100%;max-width:380px;text-align:center;
+  background:linear-gradient(165deg,rgba(17,24,40,.65),var(--card));
+  border:1px solid var(--border);
+  border-radius:20px;padding:2.2rem 1.5rem;width:100%;max-width:400px;text-align:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.3),0 32px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.02);
+  position:relative;overflow:hidden;
+  animation:loginCard .6s cubic-bezier(.22,1,.36,1);
+  margin:auto 0;
 }
-.adm-login-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--white);letter-spacing:3px;margin-bottom:.4rem;}
-.adm-login-sub{font-size:.82rem;color:var(--text2);margin-bottom:1.5rem;}
+.adm-login-card .btn-gold{min-height:48px;touch-action:manipulation;}
+@keyframes loginCard{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.adm-login-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--blue),var(--gold),var(--blue),transparent);
+  opacity:.9;
+}
+.adm-login-card::after{
+  content:'';position:absolute;top:-50%;left:-30%;width:60%;height:100%;
+  background:radial-gradient(ellipse,rgba(212,168,67,.08),transparent 70%);
+  pointer-events:none;
+}
+.adm-login-title{font-family:var(--font-display);font-size:2rem;color:var(--white);letter-spacing:4px;margin-bottom:.45rem;position:relative;}
+.adm-login-sub{font-size:.84rem;color:var(--text2);margin-bottom:1.5rem;line-height:1.55;position:relative;}
 .adm-err{font-size:.78rem;color:var(--danger);min-height:1.2em;margin-top:.5rem;font-weight:700;}
 
 /* Modal */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:10000;padding:1.5rem;backdrop-filter:blur(5px);}
+.modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.78);
+  display:none;align-items:center;justify-content:center;z-index:10000;
+  padding:max(1rem,env(safe-area-inset-top)) max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left));
+  backdrop-filter:blur(5px);
+  -webkit-overflow-scrolling:touch;
+}
 .modal-bg.on{display:flex;}
-.modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:520px;box-shadow:0 30px 80px rgba(0,0,0,.6);max-height:90vh;overflow-y:auto;}
-.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--white);letter-spacing:2px;margin-bottom:1.3rem;}
-.modal-grid{display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.3rem;}
-.modal-footer{display:flex;gap:.75rem;justify-content:flex-end;flex-wrap:wrap;}
+.modal-box{
+  background:linear-gradient(170deg,rgba(17,24,40,.5),var(--card));
+  border:1px solid var(--border);border-radius:18px;padding:2rem 1.25rem;width:100%;max-width:520px;
+  box-shadow:0 8px 40px rgba(0,0,0,.45),0 32px 90px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);
+  max-height:min(88dvh,88vh);overflow-y:auto;animation:modalIn .4s cubic-bezier(.22,1,.36,1);
+  position:relative;
+}
+@media(max-width:479px){
+  .modal-bg{align-items:flex-end;padding-bottom:max(0.5rem,env(safe-area-inset-bottom));}
+  .modal-box{
+    border-radius:18px 18px 0 0;
+    max-height:min(92dvh,92vh);
+    padding:1.35rem 1rem 1.4rem;
+  }
+}
+@media(min-width:480px){
+  .modal-box{padding:2rem 2.1rem;max-height:90vh}
+}
+.modal-box::before{
+  content:'';position:absolute;top:0;left:1.5rem;right:1.5rem;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(212,168,67,.4),transparent);border-radius:1px;
+}
+.modal-title{
+  font-family:var(--font-display);font-size:clamp(1.15rem,4vw,1.4rem);
+  color:var(--white);letter-spacing:2px;margin-bottom:1.1rem;
+  padding-right:1.5rem;
+}
+.modal-grid{display:flex;flex-direction:column;gap:.85rem;margin-bottom:1.1rem;}
+.modal-footer{
+  display:flex;gap:.65rem;justify-content:stretch;flex-wrap:wrap;
+  flex-direction:column-reverse;
+}
+.modal-footer .btn-gold,
+.modal-footer .btn-outline{
+  width:100%;min-height:48px;justify-content:center;
+  touch-action:manipulation;
+}
+@media(min-width:480px){
+  .modal-footer{flex-direction:row;justify-content:flex-end;flex-wrap:wrap;}
+  .modal-footer .btn-gold,
+  .modal-footer .btn-outline{width:auto;min-height:44px;}
+}
 
 /* ══════════════════════════════════
    ANIMATIONS
@@ -983,6 +1198,10 @@ textarea.adm-input{resize:vertical;min-height:90px;}
 @keyframes shimmer{
   0%{background-position:-200% center;}
   100%{background-position:200% center;}
+}
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(8px) scale(.98);}
+  to{opacity:1;transform:translateY(0) scale(1);}
 }
 
 /* ══════════════════════════════════
@@ -1020,25 +1239,114 @@ textarea.adm-input{resize:vertical;min-height:90px;}
   
   .join-card{padding:2rem 1.5rem;}
 
-  /* Admin responsive */
-  .adm-layout{flex-direction:column;}
+  /* Admin: tablet & phone */
+  .adm-layout{flex-direction:column;flex:1;min-height:0;}
+  /* Мазмұн мен таб тақтасын тігінен қию — row қалса сайдбар 100% енімен қатар экранды бөледі */
+  .adm-inner-layout{
+    flex-direction:column;
+    width:100%;
+    flex:1;
+    min-height:0;
+    align-items:stretch;
+  }
+  .adm-main{
+    width:100%;
+    flex:1 1 auto;
+  }
+  .adm-topbar{
+    position:relative; /* sticky+absolute children */
+    padding:0.5rem 0.9rem;gap:0.5rem;flex-shrink:0;
+  }
+  .adm-topbar-title{font-size:1.05rem;letter-spacing:2px;}
+  .adm-topbar-sub{font-size:0.58rem;letter-spacing:1.5px;}
+  .adm-topbar-left{
+    width:100%;align-items:flex-start;gap:0.65rem;
+    position:relative;
+    padding-right:4.8rem; /* close button */
+  }
+  .adm-topbar-left > div:first-of-type{min-width:0;}
+  .adm-topbar-right{position:absolute;top:0.45rem;right:0.75rem;z-index:2;}
+  .adm-topbar-stats{
+    order:2;width:100%;
+    max-width:100%;
+    padding-top:0.15rem;
+  }
+  .adm-chip{
+    font-size:0.58rem;
+    padding:0.32rem 0.5rem;flex-shrink:0;
+  }
   .adm-sidebar{
-    width:100%;flex-direction:row;
+    width:100%;max-width:100%;
+    flex:0 0 auto;
+    flex-direction:row;
     overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
     border-right:none;border-bottom:1px solid var(--border);
-    padding:.4rem .6rem;gap:.3rem;flex-shrink:0;
+    padding:0.5rem 0.45rem;gap:0.35rem;
     scrollbar-width:none;
+    min-height:52px;align-items:center;
+    box-sizing:border-box;
   }
   .adm-sidebar::-webkit-scrollbar{display:none;}
-  .adm-nav-item{
-    border-left:none;border-bottom:2.5px solid transparent;
-    flex-shrink:0;border-radius:8px;
-    padding:.6rem 1rem;font-size:.78rem;
+  .adm-side-brand{
+    display:none;
   }
-  .adm-nav-item.active{border-left:none;border-bottom-color:var(--gold);}
-  .adm-main{padding:1.2rem;}
-  .adm-grid{grid-template-columns:1fr;}
+  .adm-nav-item{
+    border-left:none;border-bottom:3px solid transparent;
+    flex-shrink:0;border-radius:9px;
+    padding:0.55rem 0.9rem;
+    min-height:44px;font-size:0.8rem;
+  }
+  .adm-nav-item.active{
+    border-left-color:transparent;
+    border-bottom-color:var(--gold);
+    background:rgba(212,168,67,.1);
+    box-shadow:none;
+  }
+  .adm-nav-item:hover{transform:none;}
+  .adm-input,textarea.adm-input,.adm-login-card .adm-input{
+    font-size:16px; /* iOS: фокус кезінде қатты масштабтау */
+  }
+  .adm-btns-row .btn-gold,#tab-settings .adm-btns-row .btn-gold{
+    width:100%;max-width:100%;min-height:48px;justify-content:center;
+  }
+  .adm-main{
+    padding:1rem 0.9rem 1.25rem;
+    padding-bottom:max(1.25rem,env(safe-area-inset-bottom));
+  }
+  .adm-h2{
+    font-size:1.35rem;margin-bottom:1.1rem;
+    flex-wrap:wrap;gap:0.5rem;
+  }
+  .settings-section{
+    padding:1.1rem 1.05rem;margin-bottom:1rem;
+  }
+  .settings-section-title{
+    font-size:0.68rem;margin-bottom:0.9rem;flex-wrap:wrap;
+  }
+  .adm-grid{grid-template-columns:1fr;gap:0.85rem;}
   .adm-grid.col3{grid-template-columns:1fr;}
+  .photo-preview{flex-direction:column;align-items:flex-start;gap:0.65rem;}
+  #tab-leaders .btn-gold,
+  #tab-cities .btn-gold{
+    width:100%;min-height:48px;justify-content:center;
+  }
+  .adm-table-wrap{
+    margin:0 -0.4rem;
+    padding:0 0.4rem 0.35rem 0.4rem;
+  }
+  .adm-table{font-size:0.76rem;min-width:500px;}
+  .adm-table th,
+  .adm-table td{
+    padding:0.6rem 0.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation:none!important;
+    transition:none!important;
+    scroll-behavior:auto!important;
+  }
 }
 
 @media(max-width:480px){
@@ -1059,10 +1367,23 @@ textarea.adm-input{resize:vertical;min-height:90px;}
   footer{padding:2rem 1rem;}
   .footer-links{gap:1rem;}
 
-  .adm-topbar{padding:0 .8rem;}
-  .adm-topbar-title{font-size:.95rem;}
-  .adm-main{padding:.9rem;}
-  .modal-box{padding:1.3rem;}
+  .adm-topbar{padding:0.42rem 0.6rem;}
+  .adm-topbar-left{padding-right:4.2rem;}
+  .adm-topbar-title{font-size:0.92rem;letter-spacing:1.5px;}
+  .adm-topbar-sub{font-size:0.52rem;letter-spacing:1.2px;}
+  .adm-close{padding:0.45rem 0.75rem;min-height:44px;font-size:0.68rem;}
+  .adm-main{
+    padding:0.85rem 0.65rem 1rem;
+    padding-bottom:max(1rem,env(safe-area-inset-bottom));
+  }
+  .adm-h2{font-size:1.2rem;}
+  .settings-section{padding:0.95rem 0.9rem;}
+  .adm-table .adm-actions{
+    flex-direction:column;align-items:stretch;gap:0.45rem;
+  }
+  .adm-table .adm-btn-sm{
+    width:100%;min-height:44px;justify-content:center;
+  }
 }
 
 @media(max-width:360px){
@@ -1149,15 +1470,15 @@ textarea.adm-input{resize:vertical;min-height:90px;}
     <h1 class="hero-title">BAR<span class="gold-stroke">YS</span></h1>
     <p class="hero-tagline" data-i18n="hero_sub">Күш · Бірлік · Мақсат</p>
     <div class="hero-divider"></div>
-    <p class="hero-desc" data-i18n="hero_desc">Қазақстанның үздік лидерлерін біріктіретін озық қауымдастық</p>
+    <p class="hero-desc" data-i18n="hero_desc">Барша СНГ бойынша мықты саналы азаматтардың ортасы</p>
     <div class="hero-btns">
-      <a href="#leaders" class="btn-gold" data-i18n="btn_leaders">Лидерлерді танысу</a>
+      <a href="#leaders" class="btn-gold" data-i18n="btn_leaders">Лидерлермен танысу</a>
       <a href="#join"    class="btn-outline" data-i18n="btn_join">Қосылу</a>
     </div>
   </div>
 
   <div class="hero-scroll">
-    <span data-i18n="scroll">Төмен қараңыз</span>
+    <span data-i18n="scroll">Төмен сырғытыңыз</span>
     <svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg>
   </div>
 </div>
@@ -1223,11 +1544,11 @@ textarea.adm-input{resize:vertical;min-height:90px;}
       </div>
 
       <div class="founder-info">
-        <div class="founder-name" id="founderName">BARYS Лидері</div>
+        <div class="founder-name" id="founderName">BARYS лидері</div>
         <div class="founder-role-tag" id="founderRole">Негіздеуші · BARYS</div>
-        <p class="founder-body" id="founderDesc">BARYS қауымдастығы туралы сипаттама осында болады.</p>
+        <p class="founder-body" id="founderDesc">Негіздеуші жайлы мәтінді әкімшілік панелінде орната аласыз.</p>
         <div class="tag-cloud">
-          <span class="tag" data-i18n="badge1">Визионер</span>
+          <span class="tag" data-i18n="badge1">Болашақшыл</span>
           <span class="tag" data-i18n="badge2">Сенімнің символы</span>
           <span class="tag" data-i18n="badge3">Ұйымдастырушы</span>
         </div>
@@ -1242,8 +1563,8 @@ textarea.adm-input{resize:vertical;min-height:90px;}
 <div class="container">
   <section id="leaders" class="reveal">
     <div class="section-eyebrow" data-i18n="leaders_label">Қала лидерлері</div>
-    <h2 class="section-title" data-i18n="leaders_title">Лидерлерімізді танысыңыз</h2>
-    <p class="section-desc" style="margin-bottom:2.5rem;" data-i18n="leaders_desc">Әр қала мен аймақта BARYS идеяларын алға апарып жүрген тұлғалар</p>
+    <h2 class="section-title" data-i18n="leaders_title">Лидерлермен танысу</h2>
+    <p class="section-desc" style="margin-bottom:2.5rem;" data-i18n="leaders_desc">Әр қала мен аймақта BARYS идеяларын алға жылжытып жүрген тұлғалар</p>
     <div class="leaders-grid" id="leadersGrid">
       <div class="leaders-empty" data-i18n="loading">Жүктелуде…</div>
     </div>
@@ -1263,14 +1584,14 @@ textarea.adm-input{resize:vertical;min-height:90px;}
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3 class="value-name" data-i18n="value1">Ынтымақтастық</h3>
-        <p class="value-desc" data-i18n="value1_desc">Бір-бірімізге толық сенім және іс-әрекеттегі шынайылық.</p>
+        <p class="value-desc" data-i18n="value1_desc">Бір-бірімізге толық сенім және іс-әрекеттегі шынайылық</p>
       </div>
       <div class="value-card">
         <div class="value-icon">
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
         <h3 class="value-name" data-i18n="value2">Бірлік</h3>
-        <p class="value-desc" data-i18n="value2_desc">Барлық лидерлер тең дәрежеде, бір мақсатқа қарай бірге жұмыс істейді.</p>
+        <p class="value-desc" data-i18n="value2_desc">Барлық лидерлер тең дәрежеде, бір мақсатқа қарай бірлесіп жұмыс істейді.</p>
       </div>
       <div class="value-card">
         <div class="value-icon">
@@ -1294,7 +1615,7 @@ textarea.adm-input{resize:vertical;min-height:90px;}
       <div class="step-card">
         <div class="step-num">1</div>
         <h3 class="step-title" data-i18n="step1_title">Тіркелу</h3>
-        <p class="step-desc" data-i18n="step1_desc">Атыңыз бен қалаңызды толтырыңыз</p>
+        <p class="step-desc" data-i18n="step1_desc">Аты мен қалаңызды енгізіңіз</p>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
@@ -1315,8 +1636,8 @@ textarea.adm-input{resize:vertical;min-height:90px;}
   <section id="join" class="reveal">
     <div class="join-card">
       <div class="join-inner">
-        <h2 class="join-title" data-i18n="join_title">BARYS-қа қосылыңыз</h2>
-        <p class="join-desc" data-i18n="join_desc">Лидерлік қозғалысымыздың мүшесі болу мүмкіндігін жіберіп алмаңыз.</p>
+        <h2 class="join-title" data-i18n="join_title">BARYS қауымдастығына қосылыңыз</h2>
+        <p class="join-desc" data-i18n="join_desc">Лидерлік қозғалысқа қосылу мүмкіндігін қолдан жібермеңіз.</p>
         <div id="joinFormWrap">
           <form class="join-form" id="joinForm">
             <input class="form-input" type="text" id="jfName"
@@ -1360,25 +1681,37 @@ textarea.adm-input{resize:vertical;min-height:90px;}
 <!-- ══ ADMIN PANEL ══ -->
 <div id="adm">
   <div class="adm-topbar">
-    <div class="adm-topbar-title">BARYS ADMIN</div>
-    <button onclick="closeAdmin()" class="adm-close">✕ Жабу</button>
+    <div class="adm-topbar-left">
+      <div>
+        <div class="adm-topbar-title">BARYS</div>
+        <span class="adm-topbar-sub">әкімшілік панелі</span>
+      </div>
+      <div class="adm-topbar-stats">
+        <span class="adm-chip">Қалалар: <b id="admCityCount">0</b></span>
+        <span class="adm-chip">Лидерлер: <b id="admLeaderCount">0</b></span>
+      </div>
+    </div>
+    <div class="adm-topbar-right">
+      <button type="button" onclick="closeAdmin()" class="adm-close" aria-label="Панельді жабу">Жабу</button>
+    </div>
   </div>
   <div class="adm-layout">
     <!-- Login -->
     <div class="adm-login-wrap" id="admLogin">
       <div class="adm-login-card">
-        <div class="adm-login-title">КІРУ</div>
-        <div class="adm-login-sub">Әкімші паролін енгізіңіз</div>
+        <div class="adm-login-title">Кіру</div>
+        <div class="adm-login-sub">Құпиясөзді енгізіңіз</div>
         <input type="password" class="adm-input" id="admPass"
-          placeholder="Пароль" style="width:100%;margin-bottom:.8rem;"
+          placeholder="Құпиясөз" style="width:100%;margin-bottom:.8rem;"
           onkeypress="if(event.key==='Enter')admLogin()"/>
         <div class="adm-err" id="admErr"></div>
-        <button onclick="admLogin()" class="btn-gold" style="width:100%;margin-top:.8rem;justify-content:center;">Кіру</button>
+        <button type="button" onclick="admLogin()" class="btn-gold" style="width:100%;margin-top:.8rem;justify-content:center;">Кіру</button>
       </div>
     </div>
     <!-- Sidebar + Main (hidden until login) -->
-    <div id="admContent" style="display:none;flex:1;overflow:hidden;display:none;" class="adm-layout">
+    <div id="admContent" style="display:none;flex:1;min-height:0;overflow:hidden;" class="adm-inner-layout">
       <div class="adm-sidebar">
+        <div class="adm-side-brand">Бөлімдер</div>
         <div class="adm-nav-item active" onclick="swTab('settings',this)">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2m0 16v2m7.07-4.93l-1.41-1.41M4.93 19.07l1.41-1.41M2 12h2m16 0h2"/></svg>
           Баптаулар
@@ -1405,19 +1738,19 @@ textarea.adm-input{resize:vertical;min-height:90px;}
             </div>
             <div class="adm-grid">
               <div class="adm-field">
-                <label class="adm-label">Тіркер мәтіні 1</label>
-                <input class="adm-input" id="sTicker1" type="text" placeholder="Мысалы: Жаңа лидерлер қабылдануда"/>
+                <label class="adm-label">Тиккер мәтіні 1</label>
+                <input class="adm-input" id="sTicker1" type="text" placeholder="Мысалы: жаңа лидерлер қабылдануда"/>
               </div>
               <div class="adm-field">
-                <label class="adm-label">Тіркер мәтіні 2</label>
+                <label class="adm-label">Тиккер мәтіні 2</label>
                 <input class="adm-input" id="sTicker2" type="text" placeholder="Мысалы: BARYS — Күш, Бірлік, Мақсат"/>
               </div>
               <div class="adm-field">
-                <label class="adm-label">Тіркер мәтіні 3</label>
-                <input class="adm-input" id="sTicker3" type="text" placeholder="Мысалы: Қазақстан бойынша лидерлер желісі"/>
+                <label class="adm-label">Тиккер мәтіні 3</label>
+                <input class="adm-input" id="sTicker3" type="text" placeholder="Мысалы: СНГ бойынша лидерлер желісі"/>
               </div>
               <div class="adm-field">
-                <label class="adm-label">Тіркер мәтіні 4</label>
+                <label class="adm-label">Тиккер мәтіні 4</label>
                 <input class="adm-input" id="sTicker4" type="text" placeholder="Мысалы: Команда. Жеңіс. Мақтаныш."/>
               </div>
             </div>
@@ -1432,7 +1765,7 @@ textarea.adm-input{resize:vertical;min-height:90px;}
             <div class="adm-grid">
               <div class="adm-field">
                 <label class="adm-label">Негіздеушінің аты-жөні</label>
-                <input class="adm-input" id="sFname" type="text" placeholder="Аты Жөні"/>
+                <input class="adm-input" id="sFname" type="text" placeholder="Аты-жөні"/>
               </div>
               <div class="adm-field">
                 <label class="adm-label">Негіздеушінің лауазымы</label>
@@ -1463,12 +1796,12 @@ textarea.adm-input{resize:vertical;min-height:90px;}
             </div>
             <div class="adm-grid">
               <div class="adm-field">
-                <label class="adm-label">Жаңа пароль</label>
-                <input class="adm-input" id="sPass" type="password" placeholder="Бос қалдырсаңыз — өзгермейді"/>
+                <label class="adm-label">Жаңа құпиясөз</label>
+                <input class="adm-input" id="sPass" type="password" placeholder="Өзгертпесеңіз, бос қалдырыңыз"/>
               </div>
               <div class="adm-field">
-                <label class="adm-label">Паролді растау</label>
-                <input class="adm-input" id="sPass2" type="password" placeholder="Паролді қайта енгізіңіз"/>
+                <label class="adm-label">Құпиясөзді растау</label>
+                <input class="adm-input" id="sPass2" type="password" placeholder="Қайта енгізіңіз"/>
               </div>
             </div>
           </div>
@@ -1593,26 +1926,26 @@ const T = {
   kk:{
     nav_leaders:'Лидерлер',nav_values:'Құндылықтар',nav_join:'Қосылу',
     hero_badge:'Қазақстан · 2026',hero_sub:'Күш · Бірлік · Мақсат',
-    hero_desc:'Қазақстанның үздік лидерлерін біріктіретін озық қауымдастық',
-    btn_leaders:'Лидерлерді танысу',btn_join:'Қосылу',scroll:'Төмен қараңыз',
+    hero_desc:'Барша СНГ бойынша мықты саналы азаматтардың ортасы',
+    btn_leaders:'Лидерлермен танысу',btn_join:'Қосылу',scroll:'Төмен сырғытыңыз',
     stat_cities:'Қалалар',stat_leaders:'Лидерлер',stat_unity:'Бірлік',stat_year:'Жыл',
     founder_label:'Негіздеуші',founder_title:'Қауымдастық лидері',
-    badge1:'Визионер',badge2:'Сенімнің символы',badge3:'Ұйымдастырушы',
-    leaders_label:'Қала лидерлері',leaders_title:'Лидерлерімізді танысыңыз',
-    leaders_desc:'Әр қала мен аймақта BARYS идеяларын алға апарып жүрген тұлғалар',
+    badge1:'Болашақшыл',badge2:'Сенімнің символы',badge3:'Ұйымдастырушы',
+    leaders_label:'Қала лидерлері',leaders_title:'Лидерлермен танысу',
+    leaders_desc:'Әр қала мен аймақта BARYS идеяларын алға жылжытып жүрген тұлғалар',
     value1:'Ынтымақтастық',value1_desc:'Бір-бірімізге толық сенім және іс-әрекеттегі шынайылық.',
-    value2:'Бірлік',value2_desc:'Барлық лидерлер тең дәрежеде, бір мақсатқа қарай бірге жұмыс істейді.',
+    value2:'Бірлік',value2_desc:'Барлық лидерлер тең дәрежеде, бір мақсатқа қарай бірлесіп жұмыс істейді.',
     value3:'Мақсат',value3_desc:'Нақты мақсатқа бағытталған ортақ іс-қимыл және жауапкершілік.',
     values_label:'Негізі',values_title:'BARYS Құндылықтары',
     manifesto_label:'Манифест',manifesto_quote:'Нағыз лидер — халқына қызмет ететін адам',
     steps_label:'Қосылу жолы',steps_title:'Үш қадам',
-    step1_title:'Тіркелу',step1_desc:'Атыңыз бен қалаңызды толтырыңыз',
+    step1_title:'Тіркелу',step1_desc:'Аты мен қалаңызды енгізіңіз',
     step2_title:'Растау',step2_desc:'WhatsApp тобына қосылыңыз',
-    step3_title:'Белсенді болу',step3_desc:'BARYS қауымдастығымен бірге өсіңіз',
-    join_title:'BARYS-қа қосылыңыз',
-    join_desc:'Лидерлік қозғалысымыздың мүшесі болу мүмкіндігін жіберіп алмаңыз.',
+    step3_title:'Белсенді болу',step3_desc:'BARYS қауымдастығымен бірге өркендеңіз',
+    join_title:'BARYS қауымдастығына қосылыңыз',
+    join_desc:'Лидерлік қозғалысқа қосылу мүмкіндігін қолдан жібермеңіз.',
     input_name:'Аты-жөніңіз',select_city:'Қала таңдаңыз',btn_submit:'Қосылу',
-    success_title:'Құттықтаймыз!',success_desc:'WhatsApp тобына кіру үшін басыңыз:',
+    success_title:'Құттықтаймыз!',success_desc:'WhatsApp тобына өту үшін басыңыз:',
     btn_whatsapp:'WhatsApp-қа өту',
     footer:'© 2026 BARYS — Барлық құқықтар қорғалған',loading:'Жүктелуде…'
   },
@@ -1710,7 +2043,7 @@ const T = {
     step1_title:'Катталуу',step1_desc:'Атыңызды жана шааңызды киргизиңиз',
     step2_title:'Ырастоо',step2_desc:'WhatsApp тобуна кошулуңуз',
     step3_title:'Активдүү болуу',step3_desc:'BARYS коомчулугу менен бирге өсүңүз',
-    join_title:'BARYS ка кошулуңуз',
+    join_title:"BARYS-ка кошулуңуз",
     join_desc:'Лидерлик кыймылыбыздын мүчөсү болуу мүмкүнчүлүгүн жиберип алба.',
     input_name:'Атыңыз',select_city:'Шаар тандаңыз',btn_submit:'Кошулуу',
     success_title:'Кош келдиңиз!',success_desc:'WhatsApp тобуна кирүү үчүн басыңыз:',
@@ -1749,7 +2082,7 @@ const T = {
 function buildTicker() {
   const items = [
     S.ticker1 || 'BARYS — Күш, Бірлік, Мақсат',
-    S.ticker2 || 'Қазақстан бойынша лидерлер желісі',
+    S.ticker2 || 'СНГ бойынша лидерлер желісі',
     S.ticker3 || 'Жаңа лидерлер қабылдануда',
     S.ticker4 || 'Команда. Жеңіс. Мақтаныш.',
     `${C.length} қала · ${L.length} лидер`
@@ -1979,7 +2312,7 @@ function renderPublic() {
   const t = T[lang]||T.kk;
 
   // Founder
-  document.getElementById('founderName').textContent = S.founder_name||'BARYS Лидері';
+  document.getElementById('founderName').textContent = S.founder_name||'BARYS лидері';
   document.getElementById('founderRole').textContent = S.founder_role||'Негіздеуші · BARYS';
   document.getElementById('founderDesc').textContent = S.founder_desc||'';
 
@@ -2063,7 +2396,6 @@ function showAdminMain() {
   document.getElementById('admLogin').style.display = 'none';
   const ac = document.getElementById('admContent');
   ac.style.display = 'flex';
-  ac.classList.add('adm-layout'); // ensure layout class
   syncAdminData();
 }
 
@@ -2081,7 +2413,7 @@ function admLogin() {
     document.getElementById('admErr').textContent = '';
     showAdminMain();
   } else {
-    document.getElementById('admErr').textContent = '✕ Пароль қате — қайталап көріңіз';
+    document.getElementById('admErr').textContent = 'Құпиясөз дұрыс емес. Қайталап көріңіз.';
     document.getElementById('admPass').value = '';
     document.getElementById('admPass').focus();
   }
@@ -2098,7 +2430,7 @@ function swTab(name, el) {
 function updatePhotoPreview(url) {
   const thumb = document.getElementById('photoThumb');
   if(url&&url.trim()) {
-    thumb.innerHTML = `<img src="${url}" alt="Preview" onerror="this.outerHTML='<div class=photo-thumb-placeholder>Жаңылыс</div>'"/>`;
+    thumb.innerHTML = `<img src="${url}" alt="Preview" onerror="this.outerHTML='<div class=photo-thumb-placeholder>Жарамсыз URL</div>'"/>`;
   } else {
     thumb.innerHTML = '<div class="photo-thumb-placeholder">Фото жоқ</div>';
   }
@@ -2115,6 +2447,8 @@ function syncAdminData() {
   fi('sTicker2').value= S.ticker2||'';
   fi('sTicker3').value= S.ticker3||'';
   fi('sTicker4').value= S.ticker4||'';
+  fi('admCityCount').textContent = C.length;
+  fi('admLeaderCount').textContent = L.length;
   updatePhotoPreview(S.founder_photo||'');
 
   // Photo preview live
@@ -2151,7 +2485,7 @@ async function saveSettings() {
   if(pass1 && pass1!==pass2) {
     const msg = document.getElementById('sMsg');
     msg.style.color='var(--danger)';
-    msg.textContent='✕ Парольдер сәйкес келмейді';
+    msg.textContent='Құпиясөздер сәйкес емес';
     setTimeout(()=>{msg.textContent='';msg.style.color='';},3000);
     return;
   }
